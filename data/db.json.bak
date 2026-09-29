@@ -1,0 +1,775 @@
+{
+  "items": [
+    {
+      "id": "yAVI2Sf5",
+      "name": "Raspberry-Pi 4",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "type": "computer/micro-controller",
+      "project": "general",
+      "needed": 1,
+      "comments": ""
+    },
+    {
+      "id": "YVbtSncr",
+      "name": "Dayton Audio BCE-1 1W",
+      "storagePlace": "Studio Time - office",
+      "amount": 4,
+      "type": "speaker",
+      "project": "Fish String Theory",
+      "needed": 4,
+      "comments": "",
+      "photo": "/uploads/YVbtSncr.png"
+    },
+    {
+      "id": "kfW-5mqK",
+      "name": "Contact microphones",
+      "storagePlace": "Studio Time - office",
+      "amount": 3,
+      "type": "microphone",
+      "project": "Fish String Theory",
+      "needed": 3
+    },
+    {
+      "id": "SvxYiZ-f",
+      "name": "USB C male male - 10m",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "type": "cable",
+      "project": "Fish String Theory",
+      "needed": 1
+    },
+    {
+      "id": "nemtksVt",
+      "name": "USB C male male - 5m",
+      "storagePlace": "Studio Time - office",
+      "amount": 2,
+      "type": "cable",
+      "project": "Fish String Theory",
+      "needed": 2
+    },
+    {
+      "id": "hpPfgqez",
+      "name": "Electro-magnet 12V",
+      "storagePlace": "Studio Time - office",
+      "amount": 2,
+      "type": "speaker",
+      "project": "Fish String Theory",
+      "needed": 2
+    },
+    {
+      "id": "LE6ukgs7",
+      "name": "Fish Sculpture Parts",
+      "storagePlace": "general",
+      "amount": 7,
+      "comments": "",
+      "type": "",
+      "project": "Fish String Theory",
+      "needed": 8
+    },
+    {
+      "id": "wdupqWVh",
+      "name": "10 meters table cable",
+      "storagePlace": "general",
+      "amount": 0,
+      "comments": "Bare Wire Audio x2, Jack 6.5mm Audio, USB C",
+      "type": "unknown",
+      "project": "Fish String Theory",
+      "needed": 2
+    },
+    {
+      "id": "tp12q75s",
+      "name": "8 meters long table cable",
+      "storagePlace": "general",
+      "amount": 0,
+      "comments": "Bare Wire Audio x2, Jack 6.5mm Audio, USB C",
+      "type": "unknown",
+      "project": "Fish String Theory",
+      "needed": 2
+    },
+    {
+      "id": "0dNYaXao",
+      "name": "5 meter long table cable",
+      "storagePlace": "general",
+      "amount": 0,
+      "comments": "Bare Wire x 1, USB C",
+      "type": "unknown",
+      "project": "Fish String Theory",
+      "needed": 1
+    },
+    {
+      "id": "Pb1Y6Cpp",
+      "name": "Domino/Connectors",
+      "storagePlace": "general",
+      "amount": 0,
+      "comments": "",
+      "type": "unknown",
+      "project": "Fish String Theory",
+      "needed": 0
+    },
+    {
+      "id": "sReGkqoV",
+      "name": "Barewire Roll 20 meter",
+      "storagePlace": "general",
+      "amount": 1,
+      "comments": "",
+      "type": "unknown",
+      "project": "Fish String Theory",
+      "needed": 1
+    },
+    {
+      "id": "UfH7IVlu",
+      "name": "Lamps (head and stick)",
+      "storagePlace": "general",
+      "amount": 5,
+      "comments": "1 spare head USB from their box",
+      "type": "",
+      "project": "Fish String Theory",
+      "needed": 6
+    },
+    {
+      "id": "3H4iQGv2",
+      "name": "Directional Speaker + VESA fixture  and charger",
+      "storagePlace": "general",
+      "amount": 0,
+      "comments": "3D printed pieces and screws",
+      "type": "unknown",
+      "project": "Fish String Theory",
+      "needed": 1
+    },
+    {
+      "id": "D--1-jL4",
+      "name": "Direction Speaker Tripod",
+      "storagePlace": "general",
+      "amount": 0,
+      "comments": "Manfrotto",
+      "type": "unknown",
+      "project": "Fish String Theory",
+      "needed": 1
+    },
+    {
+      "id": "lnV93Xmr",
+      "name": "Fish Tray 4",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "comments": "Exciter, Electro Magnet, Connecting Block, Piezo",
+      "type": "diverse",
+      "project": "Fish String Theory",
+      "needed": 1
+    },
+    {
+      "id": "kfd5mQUN",
+      "name": "Electro magnet",
+      "storagePlace": "general",
+      "amount": 0,
+      "comments": "",
+      "type": "unknown",
+      "project": "Fish String Theory",
+      "needed": 4
+    },
+    {
+      "id": "tXP99KEM",
+      "name": "Piezo",
+      "storagePlace": "general",
+      "amount": 0,
+      "comments": "",
+      "type": "unknown",
+      "project": "Fish String Theory",
+      "needed": 4
+    },
+    {
+      "id": "lT-uQutn",
+      "name": "Exciter",
+      "storagePlace": "general",
+      "amount": 0,
+      "comments": "",
+      "type": "unknown",
+      "project": "Fish String Theory",
+      "needed": 4
+    },
+    {
+      "id": "CQIra1fa",
+      "name": "Bone conduction exciter",
+      "storagePlace": "general",
+      "amount": 0,
+      "comments": "",
+      "type": "",
+      "project": "Fish String Theory",
+      "needed": 1
+    },
+    {
+      "id": "qohS5z9M",
+      "name": "Spare Bone",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "comments": "",
+      "type": "",
+      "project": "Fish String Theory",
+      "needed": 1
+    },
+    {
+      "id": "9NY9LwlD",
+      "name": "Fish Spare",
+      "storagePlace": "general",
+      "amount": 0,
+      "comments": "",
+      "type": "unknown",
+      "project": "Fish String Theory",
+      "needed": 1
+    },
+    {
+      "id": "5vzEy1sT",
+      "name": "100 W chargers + USB cable",
+      "storagePlace": "general",
+      "amount": 5,
+      "comments": "",
+      "type": "",
+      "project": "Fish String Theory",
+      "needed": 5
+    },
+    {
+      "id": "hb6yqXDA",
+      "name": "Mac Mini + Power Cord + USB C cable",
+      "storagePlace": "general",
+      "amount": 0,
+      "comments": "",
+      "type": "computer/micro-controller",
+      "project": "Fish String Theory",
+      "needed": 1
+    },
+    {
+      "id": "QfnKbhEl",
+      "name": "Keyboard and Mouse",
+      "storagePlace": "general",
+      "amount": 0,
+      "comments": "",
+      "type": "computer/micro-controller",
+      "project": "Fish String Theory",
+      "needed": 1
+    },
+    {
+      "id": "OqMU2u3e",
+      "name": "Focusrite + Power Cord + Rack Screws",
+      "storagePlace": "general",
+      "amount": 0,
+      "comments": "",
+      "type": "unknown",
+      "project": "Fish String Theory",
+      "needed": 1
+    },
+    {
+      "id": "9FH-kgLC",
+      "name": "Tuner (Thomann)",
+      "storagePlace": "general",
+      "amount": 0,
+      "comments": "",
+      "type": "unknown",
+      "project": "Fish String Theory",
+      "needed": 1
+    },
+    {
+      "id": "qQDIMxNB",
+      "name": "Power Extension",
+      "storagePlace": "general",
+      "amount": 0,
+      "comments": "",
+      "type": "unknown",
+      "project": "Fish String Theory",
+      "needed": 0
+    },
+    {
+      "id": "MmrtqMI8",
+      "name": "Rack 3D parts",
+      "storagePlace": "general",
+      "amount": 1,
+      "comments": "",
+      "type": "",
+      "project": "Fish String Theory",
+      "needed": 0
+    },
+    {
+      "id": "W59eYswm",
+      "name": "Mini mad + alim + carte SD",
+      "storagePlace": "Studio Time - office",
+      "amount": 2,
+      "comments": "",
+      "type": "computer/micro-controller",
+      "project": "Conversation Metabolite",
+      "needed": 2
+    },
+    {
+      "id": "KYiYwywl",
+      "name": "HDMI cable (5m)",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "comments": "",
+      "type": "cable",
+      "project": "Conversation Metabolite",
+      "needed": 1
+    },
+    {
+      "id": "bnlUFjzI",
+      "name": "Directionnal speaker",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "comments": "",
+      "type": "speaker",
+      "project": "Conversation Metabolite",
+      "needed": 1
+    },
+    {
+      "id": "wQpaLL_-",
+      "name": "Audio amp + power",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "comments": "",
+      "type": "speaker",
+      "project": "Conversation Metabolite",
+      "needed": 1
+    },
+    {
+      "id": "su0mYike",
+      "name": "K12 fixations",
+      "storagePlace": "Studio Time - office",
+      "amount": 2,
+      "comments": "",
+      "type": "diverse",
+      "project": "Conversation Metabolite",
+      "needed": 2
+    },
+    {
+      "id": "TSDUICkm",
+      "name": "spare power plug",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "comments": "",
+      "type": "cable",
+      "project": "Conversation Metabolite",
+      "needed": 1
+    },
+    {
+      "id": "VlxR8d_n",
+      "name": "RCA <-> jack",
+      "storagePlace": "Studio Time - office",
+      "amount": 2,
+      "comments": "",
+      "type": "cable",
+      "project": "Conversation Metabolite",
+      "needed": 2
+    },
+    {
+      "id": "LcuPS_F-",
+      "name": "multi electric outlet",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "comments": "",
+      "type": "diverse",
+      "project": "Conversation Metabolite",
+      "needed": 1
+    },
+    {
+      "id": "VY6gapp0",
+      "name": "Projector + controller + power",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "comments": "",
+      "type": "diverse",
+      "project": "Conversation Metabolite",
+      "needed": 1
+    },
+    {
+      "id": "kUqLTcB0",
+      "name": "Speaker cable (5m)",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "comments": "",
+      "type": "cable",
+      "project": "Conversation Metabolite",
+      "needed": 1
+    },
+    {
+      "id": "Wa6EcbCB",
+      "name": "Table foot",
+      "storagePlace": "Studio Time - office",
+      "amount": 15,
+      "comments": "Insanely heavy",
+      "type": "diverse",
+      "project": "Fish String Theory",
+      "needed": 15
+    },
+    {
+      "id": "bfLN_ERb",
+      "name": "Latte Panda Alpha",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "needed": 1,
+      "comments": "Comes with a screen, keyboard, mouse and power adapter",
+      "type": "computer/micro-controller",
+      "project": "general",
+      "photo": null
+    },
+    {
+      "id": "YPP9gVDe",
+      "name": "Fish bones",
+      "storagePlace": "Studio Time - office",
+      "amount": 5,
+      "needed": 5,
+      "comments": "",
+      "type": "diverse",
+      "project": "Fish String Theory",
+      "photo": null
+    },
+    {
+      "id": "CzkNS1Ee",
+      "name": "Fish sculptures",
+      "storagePlace": "Studio Time - office",
+      "amount": 5,
+      "needed": 5,
+      "comments": "Ceramic 3D-printed",
+      "type": "diverse",
+      "project": "Fish String Theory",
+      "photo": null
+    },
+    {
+      "id": "5-5QrRKw",
+      "name": "5-Port Gigabit PoE+ Switch",
+      "storagePlace": "Zürich",
+      "amount": 1,
+      "needed": 1,
+      "comments": "",
+      "type": "diverse",
+      "project": "Agora Zurich",
+      "photo": null
+    },
+    {
+      "id": "gblKGaLd",
+      "name": "Raspberry-Pi 5 case with active cooling system",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "needed": 1,
+      "comments": "",
+      "type": "wire roll",
+      "project": "Agora Zurich",
+      "photo": null
+    },
+    {
+      "id": "6tgsM3_g",
+      "name": "Raspberry-Pi 3",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "needed": 1,
+      "comments": "",
+      "type": "computer/micro-controller",
+      "project": "general",
+      "photo": null
+    },
+    {
+      "id": "PeZeuohP",
+      "name": "Adafruit Feather V2",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "needed": 1,
+      "comments": "",
+      "type": "electronics",
+      "project": "Prototyping",
+      "photo": null
+    },
+    {
+      "id": "HKyffINq",
+      "name": "PCB boards",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "needed": 1,
+      "comments": "",
+      "type": "electronics",
+      "project": "Prototyping",
+      "photo": null
+    },
+    {
+      "id": "DmMOBWMp",
+      "name": "USB-C breakouts",
+      "storagePlace": "Studio Time - office",
+      "amount": 10,
+      "needed": 10,
+      "comments": "",
+      "type": "electronics",
+      "project": "Prototyping",
+      "photo": null
+    },
+    {
+      "id": "y5GoTYs_",
+      "name": "Small enclosure (mini SCULA)",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "needed": 1,
+      "comments": "Includes the 2 end-caps and plastic wires to close up",
+      "type": "diverse",
+      "project": "SCULA",
+      "photo": null
+    },
+    {
+      "id": "22nn3pR6",
+      "name": "Big enclosure (Big SCULA)",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "needed": 1,
+      "comments": "includes the 2 end-caps and plastic wires to close up",
+      "type": "diverse",
+      "project": "SCULA",
+      "photo": null
+    },
+    {
+      "id": "j4Jjyns-",
+      "name": "USB-C battery charging modules",
+      "storagePlace": "Studio Time - office",
+      "amount": 10,
+      "needed": 10,
+      "comments": "",
+      "type": "electronics",
+      "project": "Prototyping",
+      "photo": null
+    },
+    {
+      "id": "Vk1aZ871",
+      "name": "Fish Tray 3",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "needed": 1,
+      "comments": "Bone Conduction Exciter",
+      "type": "diverse",
+      "project": "Fish String Theory",
+      "photo": null
+    },
+    {
+      "id": "jJDLp0dU",
+      "name": "Fish Tray 2",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "needed": 1,
+      "comments": "Exciter, Electro Magnet, Connecting Block, Piezo",
+      "type": "diverse",
+      "project": "Fish String Theory",
+      "photo": null
+    },
+    {
+      "id": "xMhgeQEV",
+      "name": "Fish Tray 1",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "needed": 1,
+      "comments": "Exciter, Electro Magnet, Connecting Block, Piezo",
+      "type": "diverse",
+      "project": "Fish String Theory",
+      "photo": null
+    },
+    {
+      "id": "Z-3vFwcM",
+      "name": "Fish Tray 5",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "needed": 1,
+      "comments": "",
+      "type": "diverse",
+      "project": "Fish String Theory",
+      "photo": null
+    },
+    {
+      "id": "oIvvNIs3",
+      "name": "Raspberry-Pi 4",
+      "storagePlace": "Zürich",
+      "amount": 10,
+      "needed": 10,
+      "comments": "",
+      "type": "computer/micro-controller",
+      "project": "Agora Zurich",
+      "photo": null
+    },
+    {
+      "id": "6ID77MIa",
+      "name": "Medical pump",
+      "storagePlace": "Studio Time - office",
+      "amount": 2,
+      "needed": 2,
+      "comments": "includes plastic tubes for air circulation",
+      "type": "electronics",
+      "project": "Prototyping",
+      "photo": null
+    },
+    {
+      "id": "NQF88jHW",
+      "name": "Bone conduction headset Shokz",
+      "storagePlace": "Studio Time - office",
+      "amount": 2,
+      "needed": 3,
+      "comments": "Wired, mini jack & micro-usb charging",
+      "type": "speaker",
+      "project": "general",
+      "photo": null
+    },
+    {
+      "id": "KxvT_J8W",
+      "name": "Bone conduction headset Shokz",
+      "storagePlace": "Studio Time - office",
+      "amount": 1,
+      "needed": 1,
+      "comments": "Wired, mini jack & micro-usb charging",
+      "type": "speaker",
+      "project": "Outside",
+      "photo": null,
+      "splitFrom": "NQF88jHW",
+      "splitAmount": 1
+    }
+  ],
+  "locations": [
+    {
+      "name": "Studio Time - office",
+      "site": "default"
+    },
+    {
+      "name": "Zürich",
+      "site": "default"
+    },
+    {
+      "name": "Alicudi",
+      "site": "default"
+    }
+  ],
+  "vizData": {
+    "Fish String Theory": {
+      "layout": {
+        "5vzEy1sT#2": {
+          "x": 847.333,
+          "y": 83
+        },
+        "5vzEy1sT#5": {
+          "x": 538,
+          "y": 56,
+          "width": 160,
+          "height": 90
+        },
+        "sReGkqoV#1": {
+          "x": 1479.1666666666667,
+          "y": 320.0006666666667
+        },
+        "DRXtCaDS#1": {
+          "x": 2138.8333333333335,
+          "y": 882.1666666666667
+        },
+        "olvIOgSf#1": {
+          "x": 1700.1666666666667,
+          "y": 1009.167
+        },
+        "yQvod9bI#1": {
+          "x": 2064,
+          "y": 738
+        },
+        "HuBHekTf#1": {
+          "x": 2432,
+          "y": 829
+        },
+        "LE6ukgs7#2": {
+          "x": 900,
+          "y": 509
+        },
+        "LE6ukgs7#5": {
+          "x": 797,
+          "y": 953
+        },
+        "9NY9LwlD#1": {
+          "x": 879,
+          "y": 644
+        },
+        "LE6ukgs7#1": {
+          "x": 529,
+          "y": 995
+        },
+        "LE6ukgs7#4": {
+          "x": 406,
+          "y": 870
+        },
+        "LE6ukgs7#7": {
+          "x": 269,
+          "y": 987
+        },
+        "acc__053#1": {
+          "x": 1318,
+          "y": 1247
+        },
+        "lnV93Xmr#2": {
+          "x": 1718,
+          "y": 1185
+        },
+        "lnV93Xmr#3": {
+          "x": 2144,
+          "y": 1067
+        },
+        "lnV93Xmr#1": {
+          "x": 1321,
+          "y": 1431
+        },
+        "sUw_YkTJ#1": {
+          "x": 1225,
+          "y": 1761
+        },
+        "Wa6EcbCB#4": {
+          "x": 1301,
+          "y": 1979
+        }
+      },
+      "connections": [
+        {
+          "from": "5vzEy1sT#5",
+          "to": "5vzEy1sT#2",
+          "fromPart": 0,
+          "toPart": 0,
+          "fromSide": "right",
+          "toSide": "left"
+        },
+        {
+          "from": "sReGkqoV#1",
+          "to": "5vzEy1sT#2",
+          "fromPart": 0,
+          "toPart": 0,
+          "fromSide": "left",
+          "toSide": "right",
+          "legendId": null
+        }
+      ],
+      "splits": {},
+      "legend": []
+    },
+    "Conversation Metabolite": {
+      "layout": {
+        "VY6gapp0#1": {
+          "x": 858.572,
+          "y": 295.71414285714286
+        },
+        "W59eYswm#1": {
+          "x": 962.8567142857144,
+          "y": 51.428557142857144
+        }
+      },
+      "connections": [],
+      "splits": {}
+    }
+  },
+  "loans": [
+    {
+      "id": "Kk_Ucg2g",
+      "itemId": "yAVI2Sf5",
+      "itemName": "Raspberry-Pi 4",
+      "borrower": "Alex",
+      "quantity": 1,
+      "loanedAt": "2026-09-29T12:06:49.321Z",
+      "expectedReturn": null,
+      "returnedAt": "2026-09-29T12:07:02.444Z",
+      "notes": ""
+    }
+  ],
+  "projects": [
+    "Agora Zurich",
+    "Prototyping",
+    "SCULA"
+  ],
+  "types": []
+}

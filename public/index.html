@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Inventory Spreadsheet</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Inventory</h1>
+      <div class="top-menu">
+        <button id="showViz">Schematic</button>
+        <button id="menuToggle">☰</button>
+        <div id="topMenu" class="menu hidden">
+          <button id="menuViz">Project schematic</button>
+          <button id="menuLoans">Personal loans</button>
+          <div id="locationsList" class="locations-list"></div>
+          <button id="menuRemove">Remove from inventory</button>
+          <button id="menuAddLocation">Add location</button>
+          <button id="menuAddProject">Add project</button>
+          <button id="menuTypes">Manage types</button>
+          <button id="menuLogout">Log out</button>
+        </div>
+      </div>
+    </div>
+    <div class="controls">
+      <button id="refresh">Refresh</button>
+      <button id="undoAction">Undo</button>
+      <button id="redoAction">Redo</button>
+      <button id="importCsv">Import CSV</button>
+      <button id="moveSelected">Move item</button>
+      <button id="showAdd">Add new item</button>
+      <select id="filterProject">
+        <option value="all">All projects</option>
+        <option value="general">General</option>
+      </select>
+      <button id="exportCsv">Export CSV</button>
+    </div>
+
+    <table id="sheet">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Edit</th>
+          <th>Photo</th>
+          <th class="sortable" data-key="name">Name <span class="sort-indicator"></span></th>
+          <th class="sortable" data-key="project">Project <span class="sort-indicator"></span></th>
+          <th class="sortable" data-key="storagePlace">Storage <span class="sort-indicator"></span></th>
+          <th class="sortable" data-key="amount">Amount <span class="sort-indicator"></span></th>
+          <th class="sortable" data-key="type">Type <span class="sort-indicator"></span></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div id="addForm" class="modal hidden">
+      <h3 id="addFormTitle">Add Item</h3>
+      <label>Name: <input id="name"></label>
+      <label>Storage: <select id="storage"></select></label>
+      <label>Amount: <input id="amount" type="number" value="1"></label>
+      <label>Needed: <input id="needed" type="number" value="1"></label>
+      <label>Type: <select id="type"></select></label>
+      <label>Project: <select id="project"></select></label>
+      <label>Comments: <input id="comments"></label>
+      <label>Photo: <input id="photo" type="file" accept="image/*"></label>
+      <img id="photoPreview" class="photo-preview hidden" alt="Item photo preview">
+      <div class="actions">
+        <button id="addSubmit">Confirm</button>
+        <button id="addCancel">Cancel</button>
+      </div>
+    </div>
+
+    <div id="importForm" class="modal hidden">
+      <h3>Import Items From CSV</h3>
+      <label>CSV file: <input id="importCsvFile" type="file" accept=".csv,text/csv"></label>
+      <div class="actions">
+        <button id="importConfirm">Import</button>
+        <button id="importCancel">Cancel</button>
+      </div>
+    </div>
+
+    <div id="moveForm" class="modal hidden">
+      <h3>Move item</h3>
+      <label>Destination: <select id="moveProject"></select></label>
+      <div id="moveOutsideFields" class="hidden">
+        <label>Borrower name: <input id="moveBorrower"></label>
+        <label>Expected return date: <input id="moveExpectedReturn" type="date"></label>
+        <label>Notes: <input id="moveNotes"></label>
+      </div>
+      <div id="moveItems" class="transfer-items"></div>
+      <div class="actions">
+        <button id="moveConfirm">Move</button>
+        <button id="moveCancel">Cancel</button>
+      </div>
+    </div>
+
+    <div id="loansView" class="modal hidden">
+      <h3>Personal loans</h3>
+      <div class="loans-view-controls">
+        <label>Filter by borrower: <input id="loansFilterBorrower" placeholder="All borrowers"></label>
+        <label><input id="loansShowReturned" type="checkbox"> Show returned loans</label>
+      </div>
+      <div id="loansList" class="loans-list"></div>
+      <div class="actions">
+        <button id="loansViewClose">Close</button>
+      </div>
+    </div>
+
+    <div id="typesView" class="modal hidden">
+      <h3>Item types</h3>
+      <div id="typesList" class="types-list"></div>
+      <form id="typesAddForm" class="viz-legend-add-form">
+        <input type="text" id="typesAddName" placeholder="New type" maxlength="40" required>
+        <button type="submit">Add</button>
+      </form>
+      <div class="actions">
+        <button id="typesViewClose">Close</button>
+      </div>
+    </div>
+
+    <div id="deleteForm" class="modal hidden">
+      <h3>Confirm deletion</h3>
+      <div id="deleteList" style="max-height:240px; overflow:auto; margin:8px 0; padding:6px; border:1px solid #eee; border-radius:6px; background:#fff"></div>
+      <div class="actions">
+        <button id="deleteConfirm" style="background:#c53030;color:#fff;border-color:#c53030">Delete permanently</button>
+        <button id="deleteCancel">Cancel</button>
+      </div>
+    </div>
+
+    <div id="vizForm" class="modal hidden visualizer-modal">
+      <div class="visualizer-header">
+        <h3>Project schematic</h3>
+        <div class="visualizer-controls">
+          <label>Project: <select id="vizProject"></select></label>
+          <button id="vizZoomIn">Zoom+</button>
+          <button id="vizZoomOut">Zoom-</button>
+          <button id="vizZoomReset">Reset zoom</button>
+          <button id="vizZoomFit">Fit to view</button>
+          <button id="vizReset">Reset layout</button>
+          <button id="vizClearConnections">Clear connections</button>
+          <button id="vizClose">Close</button>
+        </div>
+      </div>
+      <div class="visualizer-legend">
+        <span class="legend-item"><span class="legend-swatch live"></span>Available</span>
+        <span class="legend-item"><span class="legend-swatch missing"></span>Missing / unavailable</span>
+        <span class="legend-item">Drag boxes to rearrange the schematic</span>
+        <span class="legend-item">Hover a box to reveal its dots, then drag from one dot to another to connect them</span>
+        <span class="legend-item">Click a wire, or its row below, to set its color</span>
+      </div>
+      <div id="vizTypeLegend" class="visualizer-legend viz-type-legend"></div>
+      <div id="vizStage" class="viz-stage">
+        <svg id="vizWires" class="viz-wires" aria-hidden="true"></svg>
+        <div id="vizNodes" class="viz-nodes"></div>
+      </div>
+      <div class="visualizer-connections">
+        <div class="visualizer-connections-header">
+          <strong>Connections</strong>
+        </div>
+        <div id="vizConnections" class="visualizer-connections-list"></div>
+      </div>
+      <div class="visualizer-connections viz-legend-panel">
+        <div class="visualizer-connections-header">
+          <strong>Wire legend</strong>
+        </div>
+        <div id="vizLegendList" class="visualizer-connections-list"></div>
+        <form id="vizLegendAddForm" class="viz-legend-add-form">
+          <input type="text" id="vizLegendAddName" placeholder="New category" maxlength="40" required>
+          <input type="color" id="vizLegendAddColor" value="#4a5568">
+          <button type="submit">Add</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+  <script src="/util.js"></script>
+  <script src="/visualizer.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

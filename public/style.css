@@ -1,0 +1,138 @@
+body { font-family: system-ui, -apple-system, Arial; background:#f4f6f8; color:#222 }
+.container { max-width:1000px; margin:28px auto; background:#fff; padding:18px; border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,0.06)}
+ .header { display:flex; align-items:center; justify-content:space-between }
+ .top-menu { position:relative }
+ .top-menu button { background:#fff; border:1px solid #ddd; padding:6px 8px; border-radius:4px }
+ .menu { position:absolute; right:0; top:36px; background:#fff; border:1px solid #ddd; box-shadow:0 6px 18px rgba(0,0,0,0.06); padding:8px; border-radius:6px; display:flex; flex-direction:column; gap:8px }
+
+.locations-list { display:flex; flex-direction:column; gap:6px; max-height:200px; overflow:auto; margin-bottom:6px }
+.locations-list button { font-size:13px; padding:6px 8px; text-align:left; background:#fafafa; border:1px solid #eee }
+.locSite { font-weight:600; font-size:13px; padding:6px 4px; color:#333 }
+.locRow { display:flex; gap:6px; align-items:center }
+.locRow .locName { flex:1; text-align:left; background:transparent; border:none; padding:4px }
+.locRow .locUp, .locRow .locDown, .locRow .locDelete { padding:4px 6px; font-size:12px }
+.locRow .locDelete { color:#c53030 }
+
+/* Availability badges */
+.qty-short { color:#c53030; font-weight:700 }
+
+table { width:100%; border-collapse:collapse; margin-top:12px }
+th, td { padding:8px 10px; border-bottom:1px solid #eee; text-align:left }
+th { background:#fafafa }
+.sortable { cursor: pointer; user-select: none }
+.sort-indicator { margin-left:6px; font-size:12px }
+.controls { display:flex; gap:8px; flex-wrap:wrap }
+.controls button, .controls select { padding:8px 10px; border:1px solid #d7dbe2; border-radius:6px; background:#fff }
+/* Dim backdrop behind whichever modal is open — no extra markup needed, driven by :has(). */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms ease;
+}
+body:has(.modal:not(.hidden))::before { opacity: 1; pointer-events: auto }
+
+.modal { position:fixed; top:6vh; left:50%; transform:translateX(-50%); z-index:1000; width:min(480px, 92vw); max-height:88vh; overflow:auto; padding:16px; background:#fff; border:1px solid #eee; border-radius:8px; box-shadow:0 20px 50px rgba(0,0,0,0.25) }
+.modal label { display:flex; flex-direction:column; gap:4px; margin-top:10px }
+.modal input, .modal select { padding:8px 10px; border:1px solid #d7dbe2; border-radius:6px; background:#fff }
+#loansView { width:min(640px, 92vw) }
+.visualizer-modal { width:min(1200px, 96vw); max-height:94vh }
+.visualizer-header { display:flex; justify-content:space-between; gap:16px; align-items:flex-start; flex-wrap:wrap }
+.visualizer-controls { display:flex; gap:8px; align-items:end; flex-wrap:wrap }
+.visualizer-controls label { margin-top:0; min-width:220px }
+.visualizer-controls button.active { background:#1f2937; color:#fff; border-color:#1f2937 }
+.visualizer-legend { display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-top:10px; color:#555; font-size:13px }
+.legend-item { display:inline-flex; align-items:center; gap:6px; }
+.legend-swatch { width:12px; height:12px; border-radius:3px; display:inline-block; }
+.legend-swatch.live { background:#2f855a }
+.legend-swatch.missing { background:#c53030 }
+.viz-stage { position:relative; min-height:560px; margin-top:14px; border:1px solid #e4e7ec; border-radius:12px; background:linear-gradient(180deg, #fcfcfd 0%, #f6f8fb 100%); overflow:auto }
+.viz-wires { position:absolute; inset:0; width:100%; height:100%; pointer-events:none }
+.viz-nodes { position:absolute; inset:0 }
+.viz-node { position:absolute; min-width:170px; max-width:none; padding:10px 12px; border-radius:12px; border:2px solid #d9dee6; background:#fff; box-shadow:0 4px 12px rgba(24,39,75,0.08); cursor:grab; user-select:none }
+.viz-node.dragging { cursor:grabbing; box-shadow:0 10px 22px rgba(24,39,75,0.16); transform:scale(1.02) }
+.viz-node.resizing { cursor:nwse-resize; box-shadow:0 10px 22px rgba(24,39,75,0.16) }
+.viz-node.available { border-color:#2f855a; }
+.viz-node.missing { border-color:#c53030; background:#fff5f5 }
+.viz-node .viz-name { font-weight:700; margin-bottom:4px }
+.viz-swatch-unique { display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:8px; vertical-align:middle; box-shadow:0 1px 2px rgba(0,0,0,0.06) }
+.viz-node .viz-meta { font-size:12px; color:#5b6472; line-height:1.3 }
+.viz-node .viz-chip { display:inline-block; margin-top:8px; padding:3px 8px; border-radius:999px; font-size:11px; font-weight:700; background:#edf2f7; color:#425466 }
+.viz-node.missing .viz-chip { background:#fed7d7; color:#9b2c2c }
+.viz-segments { display:flex; flex-direction:column; gap:4px; margin-top:8px }
+.viz-segment { position:relative; display:flex; align-items:center; justify-content:center; border-radius:8px; border:1px dashed #cbd5e0; background:rgba(255,255,255,0.7); font-size:11px; color:#4a5568; padding:4px 18px; min-height:20px }
+.viz-single-segment { position:relative; display:flex; align-items:center; justify-content:center; background:transparent; border:0; font-size:13px; color:#2b3742; padding:4px 6px; min-height:20px; margin-top:8px }
+.viz-single-segment .viz-dot { opacity:0; transform:scale(0.9); transition:opacity 120ms ease, transform 120ms ease; }
+.viz-single-segment .viz-dot.left { left: -12px }
+.viz-single-segment .viz-dot.right { right: -12px }
+.viz-segment-label { position:relative; z-index:1; text-align:center }
+.viz-dot { position:absolute; top:50%; width:16px; height:16px; margin-top:-8px; border-radius:999px; border:1px solid #7b8794; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,0.08); padding:0; opacity:0; transform:scale(0.85); transition:opacity 120ms ease, transform 120ms ease, background 120ms ease, border-color 120ms ease; z-index:2 }
+.viz-dot.left { left:3px }
+.viz-dot.right { right:3px }
+/* Miro-style: connector dots reveal on hover, or on every node while a wire is being dragged
+   (so every valid drop target stays visible, not just whichever one is under the cursor). */
+.viz-node:hover .viz-dot { opacity:1 }
+.viz-stage.wiring .viz-dot { opacity:1 }
+.viz-dot:hover { transform:scale(1.2); border-color:#2b6cb0; background:#bee3f8 }
+.viz-dot:focus-visible { opacity:1; outline:2px solid #2b6cb0; outline-offset:2px }
+.viz-dot.wiring-source-dot { background:#2b6cb0; border-color:#1a4971; opacity:1 }
+.viz-stage.wiring { cursor:crosshair }
+.viz-type-legend { margin-top:4px }
+.viz-split-popover { position:absolute; z-index:10; background:#fff; border:1px solid #d9dee6; border-radius:10px; box-shadow:0 8px 20px rgba(24,39,75,0.16); padding:10px 12px; min-width:150px }
+.viz-split-popover-label { font-size:12px; font-weight:600; color:#425466; margin-bottom:6px }
+.viz-split-popover-row { display:flex; align-items:center; justify-content:center; gap:12px }
+.viz-split-popover-row button { width:26px; height:26px; border-radius:999px; border:1px solid #d7dbe2; background:#f7f8fa; font-size:16px; line-height:1; cursor:pointer }
+.viz-split-count { min-width:20px; text-align:center; font-weight:600 }
+.viz-split-popover-actions { margin-top:8px; text-align:right }
+.viz-split-popover-actions button { padding:5px 10px; font-size:12px; border-radius:6px; border:1px solid #2b6cb0; background:#2b6cb0; color:#fff; cursor:pointer }
+.viz-legend-popover { position:absolute; z-index:10; background:#fff; border:1px solid #d9dee6; border-radius:10px; box-shadow:0 8px 20px rgba(24,39,75,0.16); padding:10px 12px; min-width:200px; max-width:240px }
+.viz-legend-popover-label { font-size:12px; font-weight:600; color:#425466; margin-bottom:6px }
+.viz-legend-popover-options { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px }
+.viz-legend-option { display:flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px; border:1px solid #d7dbe2; background:#f7f8fa; font-size:12px; cursor:pointer }
+.viz-legend-option.active { border-color:#2b6cb0; background:#ebf4fb }
+.viz-legend-new-form { display:flex; gap:6px; align-items:center }
+.viz-legend-new-name { flex:1; min-width:0; font-size:12px; padding:4px 6px; border-radius:6px; border:1px solid #d7dbe2 }
+.viz-legend-panel { margin-top:12px }
+.viz-legend-row { gap:8px }
+.viz-legend-row-name { flex:1; min-width:0; border:1px solid transparent; background:transparent; font-size:13px; padding:3px 4px; border-radius:4px }
+.viz-legend-row-name:hover, .viz-legend-row-name:focus { border-color:#d7dbe2; background:#fff }
+.viz-legend-add-form { display:flex; gap:8px; align-items:center; margin-top:10px }
+.viz-legend-add-form input[type="text"] { flex:1; min-width:0 }
+.viz-connection-row-main { display:flex; align-items:center; gap:8px; cursor:pointer; flex:1 }
+.viz-node.missing .viz-segment { border-color:#feb2b2; background:rgba(255,245,245,0.85) }
+.viz-node-actions { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px }
+.viz-node-actions button { padding:4px 8px; font-size:11px; border-radius:999px; }
+.viz-resize-handle { position:absolute; right:4px; bottom:4px; width:14px; height:14px; padding:0; border:1px solid #9aa5b1; border-radius:4px; background:linear-gradient(135deg, transparent 0 48%, #9aa5b1 48% 58%, transparent 58% 100%); box-shadow:0 1px 2px rgba(0,0,0,0.08); cursor:nwse-resize; opacity:0.85 }
+.viz-resize-handle:hover { opacity:1; border-color:#2b6cb0; background:linear-gradient(135deg, transparent 0 48%, #2b6cb0 48% 58%, transparent 58% 100%) }
+.visualizer-connections { margin-top:12px; padding:10px 12px; border:1px solid #e4e7ec; border-radius:12px; background:#fff }
+.visualizer-connections-header { display:flex; justify-content:space-between; gap:10px; align-items:center; margin-bottom:10px; color:#444; font-size:13px }
+.visualizer-connections-list { display:flex; flex-direction:column; gap:8px; }
+.viz-connection-row { display:flex; justify-content:space-between; gap:10px; align-items:center; padding:8px 10px; border:1px solid #edf0f4; border-radius:8px; background:#fafbfc; font-size:13px }
+.viz-connection-row button { padding:5px 8px; font-size:12px }
+.transfer-items { display:flex; flex-direction:column; gap:10px; margin-top:12px }
+.transfer-row { display:grid; grid-template-columns: 1fr 110px; gap:10px; align-items:end; padding:10px; border:1px solid #edf0f4; border-radius:8px; background:#fafbfc }
+.transfer-row strong { display:block; margin-bottom:4px }
+.transfer-row small { color:#666 }
+.hidden { display:none }
+.actions { margin-top:8px }
+
+.loans-view-controls { display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-top:10px }
+.loans-list { display:flex; flex-direction:column; gap:8px; margin-top:12px; max-height:420px; overflow:auto }
+.loan-row { display:grid; grid-template-columns: 1fr auto; gap:10px; align-items:center; padding:10px 12px; border:1px solid #edf0f4; border-radius:8px; background:#fafbfc; font-size:13px }
+.loan-row .loan-main strong { display:block; margin-bottom:2px }
+.loan-row .loan-meta { color:#666 }
+.loan-badge { display:inline-block; padding:3px 8px; border-radius:999px; font-size:11px; font-weight:700 }
+.loan-badge.active { background:#fed7d7; color:#9b2c2c }
+.loan-badge.returned { background:#c6f6d5; color:#276749 }
+.loans-empty { color:#666; padding:12px; text-align:center }
+
+.types-list { display:flex; flex-direction:column; gap:8px; margin-top:8px; max-height:320px; overflow:auto }
+.type-row { display:grid; grid-template-columns: 1fr auto; gap:10px; align-items:center; padding:8px 10px; border:1px solid #edf0f4; border-radius:8px; background:#fafbfc; font-size:13px }
+.type-row .type-builtin-tag { color:#888; font-size:11px }
+
+.thumb { width:40px; height:40px; object-fit:cover; border-radius:4px; display:block; border:1px solid #eee }
+.photo-preview { margin-top:10px; width:120px; height:120px; object-fit:cover; border-radius:8px; border:1px solid #d7dbe2 }

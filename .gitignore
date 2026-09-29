@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+
+# Live app data — real inventory/loan data belongs on the deployed server's persistent
+# disk (DATA_DIR), never in git. Transfer it out-of-band (scp/rsync), not via git.
+/db.json
+/data/db.json
+/data/db.json.bak
+/data/db.json.tmp
+/uploads/

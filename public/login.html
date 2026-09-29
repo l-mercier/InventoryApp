@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Inventory — Sign in</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Arial; background:#f4f6f8; color:#222; display:flex; align-items:center; justify-content:center; min-height:100vh; margin:0 }
+    .card { background:#fff; padding:32px; border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,0.08); width:100%; max-width:340px }
+    h1 { font-size:20px; margin:0 0 20px }
+    label { display:block; font-size:13px; margin-bottom:6px; color:#444 }
+    input { width:100%; box-sizing:border-box; padding:10px; border:1px solid #d7dbe2; border-radius:6px; font-size:14px }
+    button { width:100%; margin-top:16px; padding:10px; border:1px solid #1f2937; border-radius:6px; background:#1f2937; color:#fff; font-size:14px; cursor:pointer }
+    .error { color:#c53030; font-size:13px; margin-top:12px }
+    .hidden { display:none }
+  </style>
+</head>
+<body>
+  <form class="card" method="POST" action="/login">
+    <h1>Studio inventory</h1>
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" autofocus required>
+    <button type="submit">Sign in</button>
+    <div class="error hidden" id="loginError">Incorrect password.</div>
+  </form>
+  <script>
+    if (new URLSearchParams(location.search).get('error')) {
+      document.getElementById('loginError').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
