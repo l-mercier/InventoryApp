@@ -6,6 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
 const session = require('express-session');
+const sharp = require('sharp');
 
 // Same DATA_DIR convention as db.js — in production this points at a mounted persistent
 // disk so uploaded photos survive redeploys.
@@ -14,15 +15,38 @@ const UPLOADS_DIR = path.join(DATA_DIR, 'uploads');
 fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 
 const ALLOWED_PHOTO_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+// Buffered in memory (photos are capped at 5MB below) rather than written to disk as-is,
+// since every upload is re-encoded by sharp before it's saved — see the route handler.
 const upload = multer({
-  storage: multer.diskStorage({
-    destination: (req, file, cb) => cb(null, UPLOADS_DIR),
-    // one photo per item — a re-upload overwrites the previous file for this id
-    filename: (req, file, cb) => cb(null, `${req.params.id}${path.extname(file.originalname).toLowerCase()}`)
-  }),
+  storage: multer.memoryStorage(),
   fileFilter: (req, file, cb) => cb(null, ALLOWED_PHOTO_TYPES.has(file.mimetype)),
   limits: { fileSize: 5 * 1024 * 1024 }
 });
+
+// Item photos are snapshots of physical gear, not graphics needing transparency, so every
+// format is flattened to a resized JPEG — except GIF, passed through untouched since it may
+// be animated and sharp would collapse it to a single frame.
+async function saveItemPhoto(id, file) {
+  // clear out any previous photo for this id first — a re-upload can change format/extension
+  // (e.g. a prior .gif replaced by a new JPEG-encoded photo), which would otherwise leave an
+  // orphaned file behind since the filename is no longer a fixed `${id}${ext}`.
+  for (const existing of fs.readdirSync(UPLOADS_DIR)) {
+    if (existing.startsWith(`${id}.`)) fs.unlinkSync(path.join(UPLOADS_DIR, existing));
+  }
+  if (file.mimetype === 'image/gif') {
+    const filename = `${id}.gif`;
+    fs.writeFileSync(path.join(UPLOADS_DIR, filename), file.buffer);
+    return filename;
+  }
+  const filename = `${id}.jpg`;
+  const resized = await sharp(file.buffer)
+    .rotate() // apply EXIF orientation before stripping metadata
+    .resize({ width: 1600, height: 1600, fit: 'inside', withoutEnlargement: true })
+    .jpeg({ quality: 82, mozjpeg: true })
+    .toBuffer();
+  fs.writeFileSync(path.join(UPLOADS_DIR, filename), resized);
+  return filename;
+}
 
 const TYPE_PRESETS = [
   'wire roll',
@@ -308,12 +332,18 @@ app.put('/api/items/:id', (req, res) => {
 
 app.post('/api/items/:id/photo',
   upload.single('photo'),
-  (req, res) => {
+  async (req, res) => {
     const id = req.params.id;
     const item = db.get(id);
     if (!item) return res.status(404).json({ error: 'Not found' });
     if (!req.file) return res.status(400).json({ error: 'No valid photo uploaded (allowed: JPEG, PNG, WEBP, GIF, max 5MB)' });
-    const updated = db.update(id, { photo: `/uploads/${req.file.filename}` });
+    let filename;
+    try {
+      filename = await saveItemPhoto(id, req.file);
+    } catch (err) {
+      return res.status(400).json({ error: 'Could not process this image' });
+    }
+    const updated = db.update(id, { photo: `/uploads/${filename}` });
     res.json(updated);
   },
   (err, req, res, next) => {
