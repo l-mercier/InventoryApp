@@ -137,7 +137,11 @@ body:has(.modal:not(.hidden))::before { opacity: 1; pointer-events: auto }
 .type-row { display:grid; grid-template-columns: 1fr auto; gap:10px; align-items:center; padding:8px 10px; border:1px solid #edf0f4; border-radius:8px; background:#fafbfc; font-size:13px }
 .type-row .type-builtin-tag { color:#888; font-size:11px }
 
-.thumb { width:40px; height:40px; object-fit:cover; border-radius:4px; display:block; border:1px solid #eee }
+.thumb { width:40px; height:40px; object-fit:cover; border-radius:4px; display:block; border:1px solid #eee; cursor:pointer }
+.lightbox { position:fixed; inset:0; z-index:1100; background:rgba(15,23,42,0.85); align-items:center; justify-content:center; padding:24px; cursor:zoom-out }
+.lightbox:not(.hidden) { display:flex }
+.lightbox img { max-width:92vw; max-height:92vh; border-radius:8px; box-shadow:0 20px 60px rgba(0,0,0,0.5); cursor:default }
+.lightbox-close { position:fixed; top:16px; right:16px; z-index:1101; width:40px; height:40px; border-radius:999px; border:none; background:rgba(255,255,255,0.92); font-size:16px; cursor:pointer }
 .photo-preview { margin-top:10px; width:120px; height:120px; object-fit:cover; border-radius:8px; border:1px solid #d7dbe2 }
 
 @media (max-width: 640px) {

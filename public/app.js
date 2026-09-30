@@ -71,6 +71,9 @@ const deleteForm = document.getElementById('deleteForm');
 const deleteList = document.getElementById('deleteList');
 const deleteConfirm = document.getElementById('deleteConfirm');
 const deleteCancel = document.getElementById('deleteCancel');
+const photoLightbox = document.getElementById('photoLightbox');
+const photoLightboxImg = document.getElementById('photoLightboxImg');
+const photoLightboxClose = document.getElementById('photoLightboxClose');
 
 let editId = null;
 
@@ -979,7 +982,28 @@ document.getElementById('addSubmit').addEventListener('click', async () => {
 });
 
 // handle clicks on edit buttons in the table (event delegation)
+function openPhotoLightbox(src) {
+  if (!photoLightbox || !photoLightboxImg) return;
+  photoLightboxImg.src = src;
+  photoLightbox.classList.remove('hidden');
+}
+function closePhotoLightbox() {
+  if (!photoLightbox) return;
+  photoLightbox.classList.add('hidden');
+  photoLightboxImg.src = '';
+}
+if (photoLightboxClose) photoLightboxClose.addEventListener('click', closePhotoLightbox);
+if (photoLightbox) {
+  // clicking the dark backdrop closes it; clicking the image itself shouldn't
+  photoLightbox.addEventListener('click', (e) => { if (e.target === photoLightbox) closePhotoLightbox(); });
+}
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && photoLightbox && !photoLightbox.classList.contains('hidden')) closePhotoLightbox();
+});
+
 tbody.addEventListener('click', (e) => {
+  const thumb = e.target.closest('.thumb');
+  if (thumb) { openPhotoLightbox(thumb.src); return; }
   const btn = e.target.closest('.editBtn');
   if (!btn) return;
   const id = btn.dataset.id;
