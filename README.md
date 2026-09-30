@@ -335,5 +335,5 @@ card as the live data — it won't help if the card itself fails. For real off-d
 periodically copy a backup off the Pi to another machine, e.g. from your Mac:
 
 ```bash
-scp maison@fred.local:~/apps/InventoryApp/backups/*.tar.gz ~/Backups/InventoryApp/
+scp maison@fred.local:~/apps/InventoryApp/data/db.json ~/Backups/InventoryApp/db-$(date +%Y%m%d-%H%M%S).json
 ```
