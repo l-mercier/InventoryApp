@@ -231,8 +231,8 @@ configuration — good for confirming the whole pipeline works before buying any
 cloudflared tunnel --url http://localhost:3000
 ```
 
-(Install 'cloudflared' first — see step 4 below for the install commands, then come back to this
-one-liner.) This prints a random 'https://<random-words>.trycloudflare.com' URL in the terminal.
+(Install `cloudflared` first — see step 4 below for the install commands, then come back to this
+one-liner.) This prints a random `https://<random-words>.trycloudflare.com` URL in the terminal.
 Open it from outside your home network (e.g. your phone on cellular data, Wi-Fi off) to confirm it
 reaches the app.
 
@@ -336,13 +336,4 @@ periodically copy a backup off the Pi to another machine, e.g. from your Mac:
 
 ```bash
 scp maison@fred.local:~/apps/InventoryApp/backups/*.tar.gz ~/Backups/InventoryApp/
-```
-
-
-
-### 6. Local backup of the database
-
-```bash
-mkdir -p ~/Backups/InventoryApp
-scp maison@fred.local:~/apps/InventoryApp/data/db.json ~/Backups/InventoryApp/db-$(date +%Y%m%d-%H%M%S).json
 ```
