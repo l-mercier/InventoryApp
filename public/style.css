@@ -16,7 +16,8 @@ body { font-family: system-ui, -apple-system, Arial; background:#f4f6f8; color:#
 /* Availability badges */
 .qty-short { color:#c53030; font-weight:700 }
 
-table { width:100%; border-collapse:collapse; margin-top:12px }
+.table-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; margin-top:12px }
+table { width:100%; min-width:640px; border-collapse:collapse }
 th, td { padding:8px 10px; border-bottom:1px solid #eee; text-align:left }
 th { background:#fafafa }
 .sortable { cursor: pointer; user-select: none }
@@ -137,3 +138,11 @@ body:has(.modal:not(.hidden))::before { opacity: 1; pointer-events: auto }
 
 .thumb { width:40px; height:40px; object-fit:cover; border-radius:4px; display:block; border:1px solid #eee }
 .photo-preview { margin-top:10px; width:120px; height:120px; object-fit:cover; border-radius:8px; border:1px solid #d7dbe2 }
+
+@media (max-width: 640px) {
+  body { margin:0 }
+  .container { margin:0; max-width:none; border-radius:0; padding:12px }
+  .header h1 { font-size:22px }
+  .controls input[type=search] { flex-basis:100% }
+  .modal { top:0; width:100vw; max-width:none; max-height:100vh; height:100vh; border-radius:0; transform:translateX(-50%) }
+}

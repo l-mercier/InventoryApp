@@ -40,21 +40,23 @@
       <button id="exportCsv">Export CSV</button>
     </div>
 
-    <table id="sheet">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Edit</th>
-          <th>Photo</th>
-          <th class="sortable" data-key="name">Name <span class="sort-indicator"></span></th>
-          <th class="sortable" data-key="project">Project <span class="sort-indicator"></span></th>
-          <th class="sortable" data-key="storagePlace">Storage <span class="sort-indicator"></span></th>
-          <th class="sortable" data-key="amount">Amount <span class="sort-indicator"></span></th>
-          <th class="sortable" data-key="type">Type <span class="sort-indicator"></span></th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <div class="table-scroll">
+      <table id="sheet">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Edit</th>
+            <th>Photo</th>
+            <th class="sortable" data-key="name">Name <span class="sort-indicator"></span></th>
+            <th class="sortable" data-key="project">Project <span class="sort-indicator"></span></th>
+            <th class="sortable" data-key="storagePlace">Storage <span class="sort-indicator"></span></th>
+            <th class="sortable" data-key="amount">Amount <span class="sort-indicator"></span></th>
+            <th class="sortable" data-key="type">Type <span class="sort-indicator"></span></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
 
     <div id="addForm" class="modal hidden">
       <h3 id="addFormTitle">Add Item</h3>
