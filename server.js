@@ -98,8 +98,13 @@ app.use((req, res, next) => {
   res.redirect('/login');
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(UPLOADS_DIR));
+// no-cache (not no-store): browsers/Cloudflare still keep a local copy but must
+// revalidate with the server on every request (a cheap 304 when unchanged), instead of
+// serving a stale cached file for hours after a deploy — Cloudflare's default edge cache
+// TTL for static extensions is 4h absent an explicit Cache-Control from the origin.
+const staticOpts = { setHeaders: (res) => res.setHeader('Cache-Control', 'no-cache') };
+app.use(express.static(path.join(__dirname, 'public'), staticOpts));
+app.use('/uploads', express.static(UPLOADS_DIR, staticOpts));
 
 // respond to favicon requests to avoid noisy 404s when no favicon is present
 app.get('/favicon.ico', (req, res) => res.status(204).end());
