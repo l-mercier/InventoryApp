@@ -25,6 +25,7 @@ th { background:#fafafa }
 .controls { display:flex; gap:8px; flex-wrap:wrap }
 .controls button, .controls select, .controls input[type=search] { padding:8px 10px; border:1px solid #d7dbe2; border-radius:6px; background:#fff }
 .controls input[type=search] { flex:1 1 200px; min-width:160px }
+.controls button.active { background:#c53030; color:#fff; border-color:#c53030 }
 /* Dim backdrop behind whichever modal is open — no extra markup needed, driven by :has(). */
 body::before {
   content: '';

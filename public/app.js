@@ -42,6 +42,9 @@ const vizNodes = document.getElementById('vizNodes');
 const vizConnections = document.getElementById('vizConnections');
 const filterProject = document.getElementById('filterProject');
 const searchInput = document.getElementById('searchInput');
+const filterMissingBtn = document.getElementById('filterMissing');
+const exportAllCsvBtn = document.getElementById('exportAllCsv');
+let showMissingOnly = false;
 const typeSelect = document.getElementById('type');
 const storageSelect = document.getElementById('storage');
 const menuToggle = document.getElementById('menuToggle');
@@ -444,6 +447,12 @@ function render() {
       const haystack = [it.name, it.type, it.project, it.storagePlace, it.comments].join(' ').toLowerCase();
       if (!haystack.includes(query)) continue;
     }
+    if (showMissingOnly) {
+      if (!window.InventoryUtil.hasQuantityGoal(it.project)) continue;
+      const amt = Number(it.amount) || 0;
+      const needed = Number.isFinite(Number(it.needed)) ? Number(it.needed) : amt;
+      if (amt >= needed) continue;
+    }
     const tr = document.createElement('tr');
     // fixed columns
     const tdCheck = document.createElement('td'); tdCheck.innerHTML = `<input data-id="${it.id}" type="checkbox">`; tr.appendChild(tdCheck);
@@ -503,6 +512,20 @@ function csvEscape(value) {
   return /[",\n\r]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
 }
 
+function downloadCsv(filename, header, rows) {
+  const lines = [header, ...rows];
+  const csv = lines.map((row) => row.map(csvEscape).join(',')).join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
 // Exports a project's fixed requirements list (name, type, needed quantity) — ignores
 // current on-hand amounts and any loans/moves in progress, per design.
 function exportProjectCsv() {
@@ -510,17 +533,22 @@ function exportProjectCsv() {
   if (!project || project === 'all') return alert('Select a specific project first');
   const rows = items.filter((it) => it.project === project);
   const neededOf = (it) => (Number.isFinite(Number(it.needed)) ? Number(it.needed) : (Number(it.amount) || 0));
-  const lines = [['name', 'type', 'quantity'], ...rows.map((it) => [it.name || '', it.type || '', neededOf(it)])];
-  const csv = lines.map((row) => row.map(csvEscape).join(',')).join('\r\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `${project.replace(/[^a-z0-9-_]+/gi, '_')}-requirements.csv`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 0);
+  downloadCsv(
+    `${project.replace(/[^a-z0-9-_]+/gi, '_')}-requirements.csv`,
+    ['name', 'type', 'quantity'],
+    rows.map((it) => [it.name || '', it.type || '', neededOf(it)])
+  );
+}
+
+// Exports every item, every project, regardless of the current table filters — a full
+// point-in-time snapshot of the inventory (unlike exportProjectCsv's per-project
+// requirements list).
+function exportAllCsv() {
+  downloadCsv(
+    `inventory-${new Date().toISOString().slice(0, 10)}.csv`,
+    ['name', 'project', 'storagePlace', 'amount', 'needed', 'type', 'comments'],
+    items.map((it) => [it.name || '', it.project || '', it.storagePlace || '', it.amount || 0, it.needed ?? '', it.type || '', it.comments || ''])
+  );
 }
 
 refreshBtn.addEventListener('click', load);
@@ -529,6 +557,15 @@ redoBtn.addEventListener('click', redoLastAction);
 filterProject.addEventListener('change', render);
 if (searchInput) searchInput.addEventListener('input', render);
 if (exportCsvBtn) exportCsvBtn.addEventListener('click', exportProjectCsv);
+if (exportAllCsvBtn) exportAllCsvBtn.addEventListener('click', exportAllCsv);
+if (filterMissingBtn) {
+  filterMissingBtn.addEventListener('click', () => {
+    showMissingOnly = !showMissingOnly;
+    filterMissingBtn.setAttribute('aria-pressed', String(showMissingOnly));
+    filterMissingBtn.classList.toggle('active', showMissingOnly);
+    render();
+  });
+}
 
 // top menu toggle + actions
 menuToggle.addEventListener('click', () => topMenu.classList.toggle('hidden'));
