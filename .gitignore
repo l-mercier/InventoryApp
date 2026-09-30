@@ -8,3 +8,4 @@ node_modules/
 /data/db.json.bak
 /data/db.json.tmp
 /uploads/
+/backups/

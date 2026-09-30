@@ -231,8 +231,8 @@ configuration — good for confirming the whole pipeline works before buying any
 cloudflared tunnel --url http://localhost:3000
 ```
 
-(Install `cloudflared` first — see step 4 below for the install commands, then come back to this
-one-liner.) This prints a random `https://<random-words>.trycloudflare.com` URL in the terminal.
+(Install 'cloudflared' first — see step 4 below for the install commands, then come back to this
+one-liner.) This prints a random 'https://<random-words>.trycloudflare.com' URL in the terminal.
 Open it from outside your home network (e.g. your phone on cellular data, Wi-Fi off) to confirm it
 reaches the app.
 
@@ -313,3 +313,36 @@ Also keep the Pi's OS updated (`sudo apt update && sudo apt upgrade`), avoid exp
 to the internet (tunnel it too, or keep it LAN-only), and treat the studio's power/internet
 reliability as the deployment's main availability risk — there's no automatic failover like Render
 provides.
+
+### 6. Automated local backups
+
+`scripts/backup.sh` snapshots `data/db.json` and `uploads/` into a timestamped `.tar.gz` under
+`backups/`, pruning anything older than 14 days (override with `RETENTION_DAYS`). Run it on a
+schedule with cron:
+
+```bash
+crontab -e
+```
+
+Add a daily line (adjust the path to your clone):
+
+```cron
+0 4 * * * /home/maison/apps/InventoryApp/scripts/backup.sh >> /home/maison/apps/InventoryApp/backups/backup.log 2>&1
+```
+
+This protects against accidental deletion or a bad edit, but the backups still live on the same SD
+card as the live data — it won't help if the card itself fails. For real off-device protection,
+periodically copy a backup off the Pi to another machine, e.g. from your Mac:
+
+```bash
+scp maison@fred.local:~/apps/InventoryApp/backups/*.tar.gz ~/Backups/InventoryApp/
+```
+
+
+
+### 6. Local backup of the database
+
+```bash
+mkdir -p ~/Backups/InventoryApp
+scp maison@fred.local:~/apps/InventoryApp/data/db.json ~/Backups/InventoryApp/db-$(date +%Y%m%d-%H%M%S).json
+```
