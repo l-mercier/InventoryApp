@@ -22,7 +22,8 @@ th { background:#fafafa }
 .sortable { cursor: pointer; user-select: none }
 .sort-indicator { margin-left:6px; font-size:12px }
 .controls { display:flex; gap:8px; flex-wrap:wrap }
-.controls button, .controls select { padding:8px 10px; border:1px solid #d7dbe2; border-radius:6px; background:#fff }
+.controls button, .controls select, .controls input[type=search] { padding:8px 10px; border:1px solid #d7dbe2; border-radius:6px; background:#fff }
+.controls input[type=search] { flex:1 1 200px; min-width:160px }
 /* Dim backdrop behind whichever modal is open — no extra markup needed, driven by :has(). */
 body::before {
   content: '';

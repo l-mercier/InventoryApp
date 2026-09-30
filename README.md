@@ -95,12 +95,52 @@ need routine OS updates. See the hardening step at the end — it closes this ga
 
 ### 1. Prepare the Pi
 
+First, check whether Node is already installed:
+
 ```bash
-# on the Pi, with Node 18+ installed
+node --version
+```
+
+If that fails or shows a version older than 18, install a current LTS via NodeSource (npm ships
+bundled with Node, no separate install needed):
+
+```bash
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+```
+
+```bash
+sudo apt-get install -y nodejs
+```
+
+Then clone and install the app:
+
+```bash
 git clone <your repo url>
 cd InventoryApp
 npm install
-APP_PASSWORD=<choose a password> SESSION_SECRET=<random string> NODE_ENV=production npm start
+```
+
+Generate a random session secret (used to sign the session cookie — pick a real password for
+`APP_PASSWORD` too, both `<...>` placeholders below need real values, not the literal text):
+
+```bash
+openssl rand -hex 32
+```
+
+```bash
+APP_PASSWORD=<choose a password> SESSION_SECRET=<paste the openssl output> npm start
+```
+
+**Don't add `NODE_ENV=production` yet.** In production mode the session cookie is marked
+`Secure`, which browsers only send over HTTPS — since you're testing over plain HTTP at this
+stage (no tunnel/domain yet), login would silently fail to stick (redirects back to the login
+page every time). Add `NODE_ENV=production` later, once traffic actually reaches the app over
+HTTPS through the Cloudflare Tunnel set up below.
+
+Find the Pi's local IP to test from another device on the same network:
+
+```bash
+hostname -I
 ```
 
 Confirm it works at `http://<pi-local-ip>:3000`, then stop it (Ctrl+C) and set it up as a service so
@@ -142,6 +182,12 @@ WantedBy=multi-user.target
 
 Replace `ExecStart` with whatever path `which node` printed, and `WorkingDirectory`/`User` with your
 actual clone path and username. In `nano`: paste, then `Ctrl+O`, `Enter` to save, `Ctrl+X` to exit.
+
+`NODE_ENV=production` is included here because by the time this service is running permanently,
+the Cloudflare Tunnel below should already be providing real HTTPS — if you enable this service
+*before* the tunnel is set up and try to log in over plain `http://<pi-local-ip>:3000`, login will
+silently fail to stick (see the note above). Access the app through the tunnel's HTTPS URL once
+it's live, not the bare IP, and this won't be an issue.
 
 If you'd rather keep `npm start` in `ExecStart`, add an explicit `Environment=PATH=...` line covering
 the directory `which node` printed — `npm` is itself a script that needs that `PATH` to find `node`,
@@ -201,22 +247,37 @@ link your team can bookmark.
 You need a domain with Cloudflare as its DNS provider (the free plan is enough). If it isn't already,
 add it in the Cloudflare dashboard and update your registrar's nameservers as instructed there.
 
+Right after buying a domain (even through Cloudflare Registrar directly), the dashboard may show
+"Invalid nameservers" for a while — this is usually just propagation, and clears up within
+15 minutes to a couple of hours. If it persists, check your email (including spam) for an
+ICANN/registrant verification link that needs confirming, since an unconfirmed registration can
+block activation. You can keep working on installing `cloudflared` below while you wait.
+
 ### 4. Install and configure `cloudflared` on the Pi
 
 ```bash
-# ARM build — see https://pkg.cloudflare.com for the current install command for your OS
-# Add cloudflare gpg key
+# see https://pkg.cloudflare.com for the current install command for your OS
 sudo mkdir -p --mode=0755 /usr/share/keyrings
 curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
+```
 
-# Add this repo to your apt repositories
-# Stable
+Add the **stable** repo only (there's also a nightly one in Cloudflare's docs — don't add both,
+they write to the same file and the second one silently overwrites the first):
+
+```bash
 echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared any main' | sudo tee /etc/apt/sources.list.d/cloudflared.list
-# Nightly
-echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://next.pkg.cloudflare.com/cloudflared any main' | sudo tee /etc/apt/sources.list.d/cloudflared.list
+```
 
-# install cloudflared
-sudo apt-get update && sudo apt-get install cloudflared
+```bash
+sudo apt-get update
+```
+
+```bash
+sudo apt-get install -y cloudflared
+```
+
+```bash
+cloudflared --version
 ```
 
 Create `~/.cloudflared/config.yml`:

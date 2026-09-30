@@ -41,6 +41,7 @@ const vizWires = document.getElementById('vizWires');
 const vizNodes = document.getElementById('vizNodes');
 const vizConnections = document.getElementById('vizConnections');
 const filterProject = document.getElementById('filterProject');
+const searchInput = document.getElementById('searchInput');
 const typeSelect = document.getElementById('type');
 const storageSelect = document.getElementById('storage');
 const menuToggle = document.getElementById('menuToggle');
@@ -420,6 +421,7 @@ function renderHeader() {
 
 function render() {
   const filter = filterProject.value;
+  const query = (searchInput ? searchInput.value : '').trim().toLowerCase();
   tbody.innerHTML = '';
   // prepare sorted+filtered list
   let list = items.slice();
@@ -438,6 +440,10 @@ function render() {
 
   for (const it of list) {
     if (filter !== 'all' && it.project !== filter) continue;
+    if (query) {
+      const haystack = [it.name, it.type, it.project, it.storagePlace, it.comments].join(' ').toLowerCase();
+      if (!haystack.includes(query)) continue;
+    }
     const tr = document.createElement('tr');
     // fixed columns
     const tdCheck = document.createElement('td'); tdCheck.innerHTML = `<input data-id="${it.id}" type="checkbox">`; tr.appendChild(tdCheck);
@@ -521,6 +527,7 @@ refreshBtn.addEventListener('click', load);
 undoBtn.addEventListener('click', undoLastAction);
 redoBtn.addEventListener('click', redoLastAction);
 filterProject.addEventListener('change', render);
+if (searchInput) searchInput.addEventListener('input', render);
 if (exportCsvBtn) exportCsvBtn.addEventListener('click', exportProjectCsv);
 
 // top menu toggle + actions
