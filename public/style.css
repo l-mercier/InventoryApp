@@ -37,9 +37,9 @@ body { font-family: var(--sans); background:var(--paper); color:var(--ink); marg
 button, input, select, textarea { font-family: inherit; color: inherit }
 ::selection { background: var(--ink); color: var(--paper) }
 
-#bg { position:fixed; inset:0; z-index:0; pointer-events:none }
+#bg { position:fixed; inset:0; z-index:-1; pointer-events:none }
 
-.container { position:relative; z-index:1; max-width:1000px; margin:28px auto; background:var(--paper-veil); padding:18px }
+.container { max-width:1000px; margin:28px auto; background:var(--paper-veil); padding:18px }
 .header { display:flex; align-items:center; justify-content:space-between; padding-bottom:14px; border-bottom:1px solid var(--line); margin-bottom:14px }
 .header h1 { font:400 clamp(26px, 4vw, 42px)/1 var(--sans); letter-spacing:-0.03em; text-transform:lowercase; margin:0 }
 .header h1::before { content:"■ " }
