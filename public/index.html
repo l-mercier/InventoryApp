@@ -18,6 +18,7 @@
 </head>
 <body>
   <canvas id="bg" aria-hidden="true"></canvas>
+  <div class="lines" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
   <div class="container">
     <div class="header">
       <h1>Inventory</h1>
@@ -25,33 +26,47 @@
         <button id="showViz">Schematic</button>
         <button id="menuToggle">☰</button>
         <div id="topMenu" class="menu hidden">
-          <button id="menuViz">Project schematic</button>
-          <button id="menuLoans">Personal loans</button>
-          <div id="locationsList" class="locations-list"></div>
-          <button id="menuRemove">Remove from inventory</button>
-          <button id="menuAddLocation">Add location</button>
-          <button id="menuAddProject">Add project</button>
-          <button id="menuTypes">Manage types</button>
-          <button id="menuSettings">UI settings</button>
-          <button id="menuLogout">Log out</button>
+          <div class="menu-section">
+            <h4>View</h4>
+            <button id="menuViz" class="menu-link">Project schematic</button>
+            <button id="menuLoans" class="menu-link">Personal loans</button>
+          </div>
+          <div class="menu-section">
+            <h4>Storage locations</h4>
+            <div id="locationsList" class="locations-list"></div>
+            <button id="menuAddLocation" class="menu-link">+ Add location</button>
+          </div>
+          <div class="menu-section">
+            <h4>Manage</h4>
+            <button id="menuAddProject" class="menu-link">Add project</button>
+            <button id="menuTypes" class="menu-link">Manage types</button>
+            <button id="menuRemove" class="menu-link">Remove from inventory</button>
+          </div>
+          <div class="menu-section">
+            <h4>Preferences</h4>
+            <button id="menuSettings" class="menu-link">UI settings</button>
+          </div>
+          <div class="menu-section">
+            <button id="menuLogout" class="menu-link">Log out</button>
+          </div>
         </div>
       </div>
     </div>
     <div class="controls">
-      <button id="refresh">Refresh</button>
-      <button id="undoAction">Undo</button>
-      <button id="redoAction">Redo</button>
-      <button id="importCsv">Import CSV</button>
-      <button id="moveSelected">Move item</button>
       <button id="showAdd">Add new item</button>
+      <button id="moveSelected">Move item</button>
       <select id="filterProject">
         <option value="all">All projects</option>
         <option value="general">General</option>
       </select>
       <input id="searchInput" type="search" placeholder="Search items…">
       <button id="filterMissing" type="button" aria-pressed="false">Show missing only</button>
-      <button id="exportCsv">Export requirements CSV</button>
-      <button id="exportAllCsv">Export full inventory CSV</button>
+      <button id="refresh" class="ghost">Refresh</button>
+      <button id="undoAction" class="ghost">Undo</button>
+      <button id="redoAction" class="ghost">Redo</button>
+      <button id="importCsv" class="ghost">Import CSV</button>
+      <button id="exportCsv" class="ghost">Export requirements CSV</button>
+      <button id="exportAllCsv" class="ghost">Export full inventory CSV</button>
     </div>
 
     <div class="table-scroll">
@@ -135,6 +150,32 @@
         </select>
       </label>
       <label><input id="settingsBackdrop" type="checkbox"> Animated background</label>
+
+      <div id="settingsBackdropOptions" class="backdrop-options hidden">
+        <label>Render
+          <div class="inline">
+            <button id="settingsModeDither" type="button" class="ghost" data-mode="dither">Dithering</button>
+            <button id="settingsModeAscii" type="button" class="ghost" data-mode="ascii">ASCII</button>
+            <button id="settingsInvert" type="button" class="ghost" aria-pressed="false">Invert</button>
+          </div>
+        </label>
+        <label>Cell size · <span id="settingsCellOut">11</span>
+          <input id="settingsCell" type="range" min="6" max="22" step="1" value="11">
+        </label>
+        <label>Contrast · <span id="settingsContrastOut">1.15</span>
+          <input id="settingsContrast" type="range" min="0.5" max="2.5" step="0.05" value="1.15">
+        </label>
+        <label>Source
+          <div class="media-grid">
+            <button id="settingsMediaDefault" type="button" class="on">Mountains<br>(generated)</button>
+            <button id="settingsMediaCustom" type="button" class="hidden"></button>
+          </div>
+        </label>
+        <label class="drop">Drop or choose a gif, video or image
+          <input id="settingsMediaFile" type="file" accept=".gif,.mp4,.webm,.mov,.png,.jpg,.jpeg,.webp" hidden>
+        </label>
+      </div>
+
       <div class="actions">
         <button id="settingsViewClose">Close</button>
       </div>

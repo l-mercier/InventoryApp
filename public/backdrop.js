@@ -1,8 +1,11 @@
-// Full-screen animated background: an ordered (Bayer) dither of a slowly drifting
-// procedural mountain scene, drawn on a fixed <canvas>. Ported from Apertus Local's
-// backdrop.ts (dither mode + procedural "Alps" source only — no ASCII mode, no
-// video/gif media sampling, to keep this a plain script with no build step).
+// Full-screen animated background: renders a source (procedural scene, or a user-picked
+// image/gif/video) as ASCII characters or as an ordered (Bayer) dither, on a fixed <canvas>.
+// Ported from Apertus Local's backdrop.ts, simplified: media (gif/video) is drawn straight
+// from a live <img>/<video> element each frame rather than stepped with ImageDecoder — the
+// browser already keeps an <img>'s GIF animation running, so drawImage() picks up whatever
+// frame is currently showing, which is enough for a background effect with no build step.
 window.InventoryBackdrop = (() => {
+  const RAMP = ' .·:-=+*xo%#@';
   const BAYER8 = (() => {
     const m = [
       [0, 32, 8, 40, 2, 34, 10, 42],
@@ -34,11 +37,7 @@ window.InventoryBackdrop = (() => {
   }
   function ridge(x, oct) {
     let v = 0, a = 0.5, f = 1;
-    for (let i = 0; i < oct; i++) {
-      v += a * (1 - Math.abs(noise1(x * f) * 2 - 1));
-      a *= 0.5;
-      f *= 2.03;
-    }
+    for (let i = 0; i < oct; i++) { v += a * (1 - Math.abs(noise1(x * f) * 2 - 1)); a *= 0.5; f *= 2.03; }
     return v;
   }
 
@@ -87,6 +86,48 @@ window.InventoryBackdrop = (() => {
         }
       }
     }
+    dispose() {}
+  }
+
+  class MediaSource {
+    constructor(url) {
+      this.canvas = document.createElement('canvas');
+      this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
+      this.el = null;
+      const ext = (url.split('?')[0].split('.').pop() || '').toLowerCase();
+      if (['mp4', 'webm', 'mov'].includes(ext)) {
+        const v = document.createElement('video');
+        Object.assign(v, { src: url, muted: true, loop: true, playsInline: true, autoplay: true });
+        v.play().catch(() => {});
+        this.el = v;
+      } else {
+        const img = new Image();
+        img.src = url;
+        this.el = img;
+      }
+    }
+    sample(lum, cols, rows, _t, aspect) {
+      const el = this.el;
+      let sw = 0, sh = 0;
+      if (el instanceof HTMLVideoElement) [sw, sh] = [el.videoWidth, el.videoHeight];
+      else if (el instanceof HTMLImageElement) [sw, sh] = [el.naturalWidth, el.naturalHeight];
+      if (!el || !sw || !sh) return lum.fill(1);
+      if (this.canvas.width !== cols || this.canvas.height !== rows) [this.canvas.width, this.canvas.height] = [cols, rows];
+      const target = aspect, ratio = sw / sh;
+      let cw = sw, ch = sh, cx = 0, cy = 0;
+      if (ratio > target) { cw = sh * target; cx = (sw - cw) / 2; } else { ch = sw / target; cy = (sh - ch) / 2; }
+      this.ctx.fillStyle = '#fff';
+      this.ctx.fillRect(0, 0, cols, rows);
+      try { this.ctx.drawImage(el, cx, cy, cw, ch, 0, 0, cols, rows); } catch (e) { /* not decoded yet */ }
+      const d = this.ctx.getImageData(0, 0, cols, rows).data;
+      for (let i = 0, j = 0; i < lum.length; i++, j += 4) {
+        const a = d[j + 3] / 255;
+        lum[i] = ((0.2126 * d[j] + 0.7152 * d[j + 1] + 0.0722 * d[j + 2]) / 255) * a + (1 - a);
+      }
+    }
+    dispose() {
+      if (this.el instanceof HTMLVideoElement) { this.el.pause(); this.el.src = ''; }
+    }
   }
 
   function hexToRgb(c) {
@@ -95,10 +136,12 @@ window.InventoryBackdrop = (() => {
     return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
   }
 
-  let canvas = null, ctx = null, source = null, lum = new Float32Array(0);
+  let canvas = null, ctx = null, source = new AlpsSource(), lum = new Float32Array(0);
   let cols = 0, rows = 0, cellW = 6, cellH = 6, dpr = 1, raf = null, last = 0;
   let dither = document.createElement('canvas');
+  let resizeHandler = null;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let opts = { mode: 'dither', cell: 11, invert: false, contrast: 1.15 };
 
   function resize() {
     if (!canvas) return;
@@ -108,57 +151,83 @@ window.InventoryBackdrop = (() => {
     canvas.height = h * dpr;
     canvas.style.width = w + 'px';
     canvas.style.height = h + 'px';
+    if (opts.mode === 'ascii') {
+      ctx.font = `${opts.cell * dpr}px "JetBrains Mono", monospace`;
+      cellW = ctx.measureText('M').width / dpr;
+      cellH = opts.cell * 1.15;
+    } else {
+      cellW = cellH = Math.max(2, Math.round(opts.cell / 3));
+    }
     cols = Math.ceil(w / cellW);
     rows = Math.ceil(h / cellH);
     lum = new Float32Array(cols * rows);
+    last = 0;
     if (reduced) draw(0);
+  }
+
+  function density(i) {
+    let d = 1 - lum[i];
+    if (opts.invert) d = 1 - d;
+    d = (d - 0.5) * opts.contrast + 0.5;
+    return d < 0 ? 0 : d > 1 ? 1 : d;
   }
 
   function draw(t) {
     source.sample(lum, cols, rows, t, (cols * cellW) / (rows * cellH));
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (opts.mode === 'ascii') drawAscii(t); else drawDither();
+  }
+
+  function drawAscii() {
+    const ink = getComputedStyle(document.documentElement).getPropertyValue('--ink-3').trim() || '#9b9b9b';
+    ctx.font = `${opts.cell * dpr}px "JetBrains Mono", monospace`;
+    ctx.textBaseline = 'top';
+    ctx.fillStyle = ink;
+    ctx.globalAlpha = 0.5;
+    const last = RAMP.length - 1;
+    for (let y = 0; y < rows; y++) {
+      let line = '';
+      for (let x = 0; x < cols; x++) line += RAMP[Math.round(density(y * cols + x) * last)];
+      ctx.fillText(line, 0, y * cellH * dpr);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function drawDither() {
     if (dither.width !== cols || dither.height !== rows) { dither.width = cols; dither.height = rows; }
     const dctx = dither.getContext('2d');
     const img = dctx.createImageData(cols, rows);
-    const ink = getComputedStyle(document.documentElement).getPropertyValue('--ink-3').trim() || '#9b9b9b';
-    const [r, g, b] = hexToRgb(ink.length === 7 || ink.length === 4 ? ink : '#9b9b9b');
+    const inkVar = getComputedStyle(document.documentElement).getPropertyValue('--ink-3').trim();
+    const [r, g, b] = hexToRgb(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(inkVar) ? inkVar : '#9b9b9b');
     for (let y = 0; y < rows; y++) {
       for (let x = 0; x < cols; x++) {
         const i = y * cols + x;
-        const d = 1 - lum[i];
-        if (d > BAYER8[y & 7][x & 7]) {
+        if (density(i) > BAYER8[y & 7][x & 7]) {
           const j = i * 4;
           img.data[j] = r; img.data[j + 1] = g; img.data[j + 2] = b; img.data[j + 3] = 90;
         }
       }
     }
     dctx.putImageData(img, 0, 0);
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.imageSmoothingEnabled = false;
     ctx.drawImage(dither, 0, 0, cols * cellW * dpr, rows * cellH * dpr);
   }
 
   function tick(now) {
     if (!canvas) return;
-    if (!reduced && now - last > 1000 / 20) {
-      last = now;
-      draw(now / 1000);
-    }
+    if (!reduced && now - last > 1000 / 20) { last = now; draw(now / 1000); }
     raf = requestAnimationFrame(tick);
   }
 
-  let resizeHandler = null;
-
   function enable() {
-    if (canvas) return; // already running
+    if (canvas) return;
     canvas = document.getElementById('bg');
     if (!canvas) return;
     ctx = canvas.getContext('2d');
-    source = new AlpsSource();
     resizeHandler = () => resize();
     addEventListener('resize', resizeHandler);
     resize();
-    last = 0;
     raf = requestAnimationFrame(tick);
   }
 
@@ -167,8 +236,18 @@ window.InventoryBackdrop = (() => {
     if (resizeHandler) removeEventListener('resize', resizeHandler);
     raf = null; resizeHandler = null;
     if (canvas && ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
-    canvas = null; ctx = null; source = null;
+    canvas = null; ctx = null;
   }
 
-  return { enable, disable };
+  function setOptions(o) {
+    opts = Object.assign({}, opts, o);
+    resize();
+  }
+
+  function setMedia(url) {
+    source.dispose();
+    source = url ? new MediaSource(url) : new AlpsSource();
+  }
+
+  return { enable, disable, setOptions, setMedia, get opts() { return opts; } };
 })();

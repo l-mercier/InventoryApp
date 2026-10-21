@@ -58,6 +58,17 @@ const settingsView = document.getElementById('settingsView');
 const settingsViewClose = document.getElementById('settingsViewClose');
 const settingsTheme = document.getElementById('settingsTheme');
 const settingsBackdrop = document.getElementById('settingsBackdrop');
+const settingsBackdropOptions = document.getElementById('settingsBackdropOptions');
+const settingsModeDither = document.getElementById('settingsModeDither');
+const settingsModeAscii = document.getElementById('settingsModeAscii');
+const settingsInvert = document.getElementById('settingsInvert');
+const settingsCell = document.getElementById('settingsCell');
+const settingsCellOut = document.getElementById('settingsCellOut');
+const settingsContrast = document.getElementById('settingsContrast');
+const settingsContrastOut = document.getElementById('settingsContrastOut');
+const settingsMediaDefault = document.getElementById('settingsMediaDefault');
+const settingsMediaCustom = document.getElementById('settingsMediaCustom');
+const settingsMediaFile = document.getElementById('settingsMediaFile');
 const menuLogout = document.getElementById('menuLogout');
 const typesView = document.getElementById('typesView');
 const typesList = document.getElementById('typesList');
@@ -686,7 +697,8 @@ if (typesViewClose) {
   });
 }
 
-// --- UI settings: theme + animated background, persisted in localStorage ---
+// --- UI settings: theme + animated background, persisted in localStorage (+ IndexedDB
+// for the custom background media file, which is too large for localStorage). ---
 function applyTheme(theme) {
   if (theme === 'light' || theme === 'dark') document.documentElement.setAttribute('data-theme', theme);
   else document.documentElement.removeAttribute('data-theme');
@@ -696,6 +708,80 @@ function applyBackdrop(enabled) {
   if (enabled) window.InventoryBackdrop.enable();
   else window.InventoryBackdrop.disable();
 }
+
+const BACKDROP_DEFAULTS = { mode: 'dither', cell: 11, invert: false, contrast: 1.15 };
+
+function loadBackdropPrefs() {
+  try {
+    const raw = localStorage.getItem('uiBackdropPrefs');
+    if (raw) return Object.assign({}, BACKDROP_DEFAULTS, JSON.parse(raw));
+  } catch (e) { /* ignore */ }
+  return Object.assign({}, BACKDROP_DEFAULTS);
+}
+function saveBackdropPrefs(prefs) {
+  try { localStorage.setItem('uiBackdropPrefs', JSON.stringify(prefs)); } catch (e) { /* ignore */ }
+}
+
+// Minimal IndexedDB wrapper for the one custom background file a browser can store.
+function backdropDb() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('inventory-ui', 1);
+    req.onupgradeneeded = () => req.result.createObjectStore('backdrop');
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function getBackdropMedia() {
+  try {
+    const db = await backdropDb();
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction('backdrop', 'readonly').objectStore('backdrop').get('media');
+      tx.onsuccess = () => resolve(tx.result || null);
+      tx.onerror = () => reject(tx.error);
+    });
+  } catch (e) { return null; }
+}
+async function setBackdropMedia(blob) {
+  try {
+    const db = await backdropDb();
+    await new Promise((resolve, reject) => {
+      const store = db.transaction('backdrop', 'readwrite').objectStore('backdrop');
+      const tx = blob ? store.put(blob, 'media') : store.delete('media');
+      tx.onsuccess = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  } catch (e) { /* ignore */ }
+}
+
+let backdropPrefs = loadBackdropPrefs();
+let customMediaUrl = null;
+
+function syncBackdropControls() {
+  if (settingsModeDither) settingsModeDither.classList.toggle('active', backdropPrefs.mode === 'dither');
+  if (settingsModeAscii) settingsModeAscii.classList.toggle('active', backdropPrefs.mode === 'ascii');
+  if (settingsInvert) { settingsInvert.classList.toggle('active', !!backdropPrefs.invert); settingsInvert.setAttribute('aria-pressed', String(!!backdropPrefs.invert)); }
+  if (settingsCell) settingsCell.value = backdropPrefs.cell;
+  if (settingsCellOut) settingsCellOut.textContent = backdropPrefs.cell;
+  if (settingsContrast) settingsContrast.value = backdropPrefs.contrast;
+  if (settingsContrastOut) settingsContrastOut.textContent = backdropPrefs.contrast;
+  if (settingsMediaDefault) settingsMediaDefault.classList.toggle('on', !customMediaUrl);
+  if (settingsMediaCustom) settingsMediaCustom.classList.toggle('on', !!customMediaUrl);
+}
+
+async function initBackdropMedia() {
+  const blob = await getBackdropMedia();
+  if (blob && settingsMediaCustom) {
+    customMediaUrl = URL.createObjectURL(blob);
+    const isVideo = blob.type.startsWith('video/');
+    settingsMediaCustom.innerHTML = isVideo
+      ? `<video src="${customMediaUrl}" muted loop autoplay playsinline></video>`
+      : `<img src="${customMediaUrl}" alt="">`;
+    settingsMediaCustom.classList.remove('hidden');
+    if (window.InventoryBackdrop) window.InventoryBackdrop.setMedia(customMediaUrl);
+  }
+  syncBackdropControls();
+}
+
 (function initUiSettings() {
   let theme = 'auto';
   let backdrop = false;
@@ -705,8 +791,10 @@ function applyBackdrop(enabled) {
   } catch (e) { /* ignore */ }
   if (settingsTheme) settingsTheme.value = theme;
   if (settingsBackdrop) settingsBackdrop.checked = backdrop;
+  if (settingsBackdropOptions) settingsBackdropOptions.classList.toggle('hidden', !backdrop);
   applyTheme(theme);
-  if (backdrop) applyBackdrop(true);
+  if (window.InventoryBackdrop) window.InventoryBackdrop.setOptions(backdropPrefs);
+  initBackdropMedia().then(() => { if (backdrop) applyBackdrop(true); });
 })();
 
 if (menuSettings) {
@@ -731,7 +819,52 @@ if (settingsBackdrop) {
   settingsBackdrop.addEventListener('change', () => {
     const enabled = settingsBackdrop.checked;
     applyBackdrop(enabled);
+    if (settingsBackdropOptions) settingsBackdropOptions.classList.toggle('hidden', !enabled);
     try { localStorage.setItem('uiBackdrop', enabled ? '1' : '0'); } catch (e) { /* ignore */ }
+  });
+}
+function updateBackdropPref(patch) {
+  backdropPrefs = Object.assign({}, backdropPrefs, patch);
+  saveBackdropPrefs(backdropPrefs);
+  if (window.InventoryBackdrop) window.InventoryBackdrop.setOptions(backdropPrefs);
+  syncBackdropControls();
+}
+if (settingsModeDither) settingsModeDither.addEventListener('click', () => updateBackdropPref({ mode: 'dither' }));
+if (settingsModeAscii) settingsModeAscii.addEventListener('click', () => updateBackdropPref({ mode: 'ascii' }));
+if (settingsInvert) settingsInvert.addEventListener('click', () => updateBackdropPref({ invert: !backdropPrefs.invert }));
+if (settingsCell) settingsCell.addEventListener('input', () => updateBackdropPref({ cell: Number(settingsCell.value) }));
+if (settingsContrast) settingsContrast.addEventListener('input', () => updateBackdropPref({ contrast: Number(settingsContrast.value) }));
+if (settingsMediaDefault) {
+  settingsMediaDefault.addEventListener('click', async () => {
+    customMediaUrl = null;
+    await setBackdropMedia(null);
+    if (window.InventoryBackdrop) window.InventoryBackdrop.setMedia(null);
+    syncBackdropControls();
+  });
+}
+if (settingsMediaCustom) {
+  settingsMediaCustom.addEventListener('click', () => {
+    if (!customMediaUrl) return;
+    if (window.InventoryBackdrop) window.InventoryBackdrop.setMedia(customMediaUrl);
+    syncBackdropControls();
+  });
+}
+if (settingsMediaFile) {
+  settingsMediaFile.addEventListener('change', async () => {
+    const file = settingsMediaFile.files && settingsMediaFile.files[0];
+    if (!file) return;
+    await setBackdropMedia(file);
+    customMediaUrl = URL.createObjectURL(file);
+    if (settingsMediaCustom) {
+      const isVideo = file.type.startsWith('video/');
+      settingsMediaCustom.innerHTML = isVideo
+        ? `<video src="${customMediaUrl}" muted loop autoplay playsinline></video>`
+        : `<img src="${customMediaUrl}" alt="">`;
+      settingsMediaCustom.classList.remove('hidden');
+    }
+    if (window.InventoryBackdrop) window.InventoryBackdrop.setMedia(customMediaUrl);
+    syncBackdropControls();
+    settingsMediaFile.value = '';
   });
 }
 

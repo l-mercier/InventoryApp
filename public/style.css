@@ -38,13 +38,23 @@ button, input, select, textarea { font-family: inherit; color: inherit }
 ::selection { background: var(--ink); color: var(--paper) }
 
 #bg { position:fixed; inset:0; z-index:-1; pointer-events:none }
+.lines { position:fixed; inset:0; z-index:-1; max-width:1000px; margin:0 auto; display:grid; grid-template-columns:repeat(4, 1fr); pointer-events:none }
+.lines i { border-left:1px solid var(--line) }
+.lines i:first-child { border-left:0 }
 
 .container { max-width:1000px; margin:28px auto; background:var(--paper-veil); padding:18px }
 .header { display:flex; align-items:center; justify-content:space-between; padding-bottom:14px; border-bottom:1px solid var(--line); margin-bottom:14px }
 .header h1 { font:400 clamp(26px, 4vw, 42px)/1 var(--sans); letter-spacing:-0.03em; text-transform:lowercase; margin:0 }
 .header h1::before { content:"■ " }
 .top-menu { position:relative }
-.menu { position:absolute; right:0; top:40px; background:var(--paper); border:1px solid var(--ink); padding:8px; display:flex; flex-direction:column; gap:8px; z-index:1001 }
+.menu { position:absolute; right:0; top:40px; width:min(280px, 90vw); max-height:80vh; overflow:auto; background:var(--paper); border:1px solid var(--ink); padding:12px; display:flex; flex-direction:column; gap:16px; z-index:1001 }
+.menu-section { display:flex; flex-direction:column; gap:2px }
+.menu-section h4 { font:11px var(--mono); letter-spacing:0.04em; text-transform:uppercase; color:var(--ink-3); font-weight:400; margin:0 0 4px }
+.menu-link {
+  display:block; width:100%; text-align:left; border:0; background:transparent; color:var(--ink-2);
+  font:13px var(--sans); text-transform:none; letter-spacing:normal; padding:5px 2px;
+}
+.menu-link:hover { color:var(--ink); background:transparent }
 
 .locations-list { display:flex; flex-direction:column; gap:6px; max-height:200px; overflow:auto; margin-bottom:6px }
 .locations-list button { font-size:11px; padding:6px 8px; text-align:left }
@@ -83,6 +93,13 @@ select:focus, input:focus, textarea:focus { border-color:var(--ink) }
 .btn-danger { border-color:var(--danger); color:var(--danger) }
 .btn-danger:hover { background:var(--danger); color:var(--paper) }
 
+/* Lower-emphasis actions (secondary/utility) — a lighter border instead of full ink,
+   and a plain color shift on hover instead of a filled invert, so primary actions
+   (Add new item, Move item, Confirm…) keep more visual weight. */
+.ghost { border-color:var(--line); color:var(--ink-2) }
+.ghost:hover { border-color:var(--ink); color:var(--ink); background:var(--paper) }
+.ghost.active { border-color:var(--accent); color:var(--accent); background:var(--paper) }
+
 /* Dim backdrop behind whichever modal is open — no extra markup needed, driven by :has(). */
 body::before {
   content: '';
@@ -102,6 +119,22 @@ body:has(.modal:not(.hidden))::before { opacity: 1; pointer-events: auto }
 .modal label:has(input[type=checkbox]) { flex-direction:row; align-items:center; gap:8px }
 .modal label input[type=checkbox] { width:14px; height:14px; accent-color:var(--ink) }
 #loansView { width:min(640px, 92vw) }
+
+.backdrop-options { display:flex; flex-direction:column; gap:4px; margin-top:6px; padding-top:10px; border-top:1px solid var(--line) }
+.inline { display:flex; gap:8px; align-items:center; flex-wrap:wrap }
+.inline input[type=range] { flex:1; accent-color:var(--ink) }
+.media-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(90px, 1fr)); gap:6px }
+.media-grid button {
+  aspect-ratio:4/3; padding:4px; font:10px var(--mono); text-transform:none; letter-spacing:normal;
+  color:var(--ink-2); overflow:hidden; position:relative; display:flex; align-items:center; justify-content:center; text-align:center;
+}
+.media-grid button.on { border-color:var(--accent); color:var(--accent) }
+.media-grid button img, .media-grid button video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:grayscale(1) }
+.drop {
+  display:block; margin-top:10px; border:1px dashed var(--ink-3); padding:16px; text-align:center;
+  font:11px var(--mono); color:var(--ink-2); text-transform:none; letter-spacing:normal; cursor:pointer;
+}
+.drop:hover { border-color:var(--ink); color:var(--ink); border-style:solid }
 .delete-list { max-height:240px; overflow:auto; margin:8px 0; padding:6px; border:1px solid var(--line) }
 .delete-row { padding:6px; border-bottom:1px solid var(--line); font-size:14px }
 .visualizer-modal { width:min(1200px, 96vw); max-height:94vh }
@@ -180,7 +213,11 @@ body:has(.modal:not(.hidden))::before { opacity: 1; pointer-events: auto }
 .transfer-row { display:grid; grid-template-columns: 1fr 110px; gap:10px; align-items:end; padding:10px; border:1px solid var(--line) }
 .transfer-row strong { display:block; margin-bottom:4px; font-weight:500 }
 .transfer-row small { color:var(--ink-3); font:11px var(--mono) }
-.hidden { display:none }
+/* !important: a utility "force hidden" class must always win over a component's own
+   display rule, regardless of that rule's specificity — this has bitten us twice already
+   (the lightbox, and the custom-background media slot) when a more specific selector like
+   `.media-grid button { display:flex }` silently outranked a plain `.hidden`. */
+.hidden { display:none !important }
 .actions { margin-top:8px; display:flex; gap:8px }
 
 .loans-view-controls { display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-top:10px }
@@ -198,8 +235,7 @@ body:has(.modal:not(.hidden))::before { opacity: 1; pointer-events: auto }
 .type-row .type-builtin-tag { color:var(--ink-3); font:11px var(--mono) }
 
 .thumb { width:40px; height:40px; object-fit:cover; display:block; border:1px solid var(--line); cursor:pointer }
-.lightbox { position:fixed; inset:0; z-index:1100; background:rgba(0,0,0,0.88); align-items:center; justify-content:center; padding:24px; cursor:zoom-out }
-.lightbox:not(.hidden) { display:flex }
+.lightbox { position:fixed; inset:0; z-index:1100; background:rgba(0,0,0,0.88); display:flex; align-items:center; justify-content:center; padding:24px; cursor:zoom-out }
 .lightbox img { max-width:92vw; max-height:92vh; cursor:default }
 .lightbox-close { position:fixed; top:16px; right:16px; z-index:1101; width:auto; height:auto; padding:8px 12px; border:1px solid #fff; background:transparent; color:#fff; font:11px var(--mono) }
 .lightbox-close:hover { background:#fff; color:#000 }
