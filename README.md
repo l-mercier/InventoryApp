@@ -337,3 +337,37 @@ periodically copy a backup off the Pi to another machine, e.g. from your Mac:
 ```bash
 scp maison@fred.local:~/apps/InventoryApp/data/db.json ~/Backups/InventoryApp/db-$(date +%Y%m%d-%H%M%S).json
 ```
+
+### 7. Automatic deployment
+
+By default, picking up new code means SSHing in to run `git pull` + `sudo systemctl restart
+inventory-app` by hand every time. `scripts/auto-deploy.sh` does this for you: it checks
+`origin/main`, and if there's anything new, pulls it, runs `npm install` (in case a dependency
+changed) and restarts the service — otherwise it does nothing. Safe to run often.
+
+It needs passwordless permission for just that one restart command — add a sudoers rule scoped to
+it only (never grants broader sudo access):
+
+```bash
+sudo visudo -f /etc/sudoers.d/inventory-deploy
+```
+
+Add this line (replace `maison` with your actual username if different):
+
+```
+maison ALL=(root) NOPASSWD: /usr/bin/systemctl restart inventory-app
+```
+
+Save and exit (same `nano`-style keys as other files in this guide), then schedule the script
+every few minutes:
+
+```bash
+crontab -e
+```
+
+```cron
+*/5 * * * * /home/maison/apps/InventoryApp/scripts/auto-deploy.sh >> /home/maison/apps/InventoryApp/backups/deploy.log 2>&1
+```
+
+New commits show up on the Pi within 5 minutes of being pushed to GitHub, no manual step needed.
+Check `backups/deploy.log` if a deploy doesn't seem to have landed.
