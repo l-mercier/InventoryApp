@@ -48,6 +48,7 @@ let showMissingOnly = false;
 const typeSelect = document.getElementById('type');
 const storageSelect = document.getElementById('storage');
 const menuToggle = document.getElementById('menuToggle');
+const themeToggle = document.getElementById('themeToggle');
 const topMenu = document.getElementById('topMenu');
 const menuRemove = document.getElementById('menuRemove');
 const menuAddLocation = document.getElementById('menuAddLocation');
@@ -703,6 +704,16 @@ function applyTheme(theme) {
   if (theme === 'light' || theme === 'dark') document.documentElement.setAttribute('data-theme', theme);
   else document.documentElement.removeAttribute('data-theme');
 }
+function setTheme(theme) {
+  applyTheme(theme);
+  if (settingsTheme) settingsTheme.value = theme;
+  try { localStorage.setItem('uiTheme', theme); } catch (e) { /* ignore */ }
+}
+function currentEffectiveTheme() {
+  const saved = document.documentElement.getAttribute('data-theme');
+  if (saved === 'light' || saved === 'dark') return saved;
+  return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
 function applyBackdrop(enabled) {
   if (!window.InventoryBackdrop) return;
   if (enabled) window.InventoryBackdrop.enable();
@@ -809,10 +820,11 @@ if (settingsViewClose) {
   });
 }
 if (settingsTheme) {
-  settingsTheme.addEventListener('change', () => {
-    const theme = settingsTheme.value;
-    applyTheme(theme);
-    try { localStorage.setItem('uiTheme', theme); } catch (e) { /* ignore */ }
+  settingsTheme.addEventListener('change', () => setTheme(settingsTheme.value));
+}
+if (themeToggle) {
+  themeToggle.addEventListener('click', () => {
+    setTheme(currentEffectiveTheme() === 'dark' ? 'light' : 'dark');
   });
 }
 if (settingsBackdrop) {
