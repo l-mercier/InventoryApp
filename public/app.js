@@ -53,6 +53,11 @@ const menuRemove = document.getElementById('menuRemove');
 const menuAddLocation = document.getElementById('menuAddLocation');
 const menuAddProject = document.getElementById('menuAddProject');
 const menuTypes = document.getElementById('menuTypes');
+const menuSettings = document.getElementById('menuSettings');
+const settingsView = document.getElementById('settingsView');
+const settingsViewClose = document.getElementById('settingsViewClose');
+const settingsTheme = document.getElementById('settingsTheme');
+const settingsBackdrop = document.getElementById('settingsBackdrop');
 const menuLogout = document.getElementById('menuLogout');
 const typesView = document.getElementById('typesView');
 const typesList = document.getElementById('typesList');
@@ -678,6 +683,55 @@ if (menuTypes) {
 if (typesViewClose) {
   typesViewClose.addEventListener('click', () => {
     if (typesView) typesView.classList.add('hidden');
+  });
+}
+
+// --- UI settings: theme + animated background, persisted in localStorage ---
+function applyTheme(theme) {
+  if (theme === 'light' || theme === 'dark') document.documentElement.setAttribute('data-theme', theme);
+  else document.documentElement.removeAttribute('data-theme');
+}
+function applyBackdrop(enabled) {
+  if (!window.InventoryBackdrop) return;
+  if (enabled) window.InventoryBackdrop.enable();
+  else window.InventoryBackdrop.disable();
+}
+(function initUiSettings() {
+  let theme = 'auto';
+  let backdrop = false;
+  try {
+    theme = localStorage.getItem('uiTheme') || 'auto';
+    backdrop = localStorage.getItem('uiBackdrop') === '1';
+  } catch (e) { /* ignore */ }
+  if (settingsTheme) settingsTheme.value = theme;
+  if (settingsBackdrop) settingsBackdrop.checked = backdrop;
+  applyTheme(theme);
+  if (backdrop) applyBackdrop(true);
+})();
+
+if (menuSettings) {
+  menuSettings.addEventListener('click', () => {
+    topMenu.classList.add('hidden');
+    if (settingsView) settingsView.classList.remove('hidden');
+  });
+}
+if (settingsViewClose) {
+  settingsViewClose.addEventListener('click', () => {
+    if (settingsView) settingsView.classList.add('hidden');
+  });
+}
+if (settingsTheme) {
+  settingsTheme.addEventListener('change', () => {
+    const theme = settingsTheme.value;
+    applyTheme(theme);
+    try { localStorage.setItem('uiTheme', theme); } catch (e) { /* ignore */ }
+  });
+}
+if (settingsBackdrop) {
+  settingsBackdrop.addEventListener('change', () => {
+    const enabled = settingsBackdrop.checked;
+    applyBackdrop(enabled);
+    try { localStorage.setItem('uiBackdrop', enabled ? '1' : '0'); } catch (e) { /* ignore */ }
   });
 }
 

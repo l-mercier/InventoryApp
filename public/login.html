@@ -14,8 +14,9 @@
       color-scheme: light;
     }
     @media (prefers-color-scheme: dark) {
-      :root { --paper: #0b0b0b; --ink: #f2f2f2; --ink-3: #6b6b6b; --line: #1f1f1f; color-scheme: dark }
+      :root:not([data-theme="light"]) { --paper: #0b0b0b; --ink: #f2f2f2; --ink-3: #6b6b6b; --line: #1f1f1f; color-scheme: dark }
     }
+    :root[data-theme="dark"] { --paper: #0b0b0b; --ink: #f2f2f2; --ink-3: #6b6b6b; --line: #1f1f1f; color-scheme: dark }
     * { box-sizing: border-box }
     body { font-family: var(--sans); background:var(--paper); color:var(--ink); display:flex; align-items:center; justify-content:center; min-height:100vh; margin:0 }
     .card { background:var(--paper); padding:32px; border:1px solid var(--ink); width:100%; max-width:340px }
@@ -29,6 +30,12 @@
     .error { color:var(--danger); font:11px var(--mono); margin-top:12px }
     .hidden { display:none }
   </style>
+  <script>
+    try {
+      var t = localStorage.getItem('uiTheme');
+      if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  </script>
 </head>
 <body>
   <form class="card" method="POST" action="/login">

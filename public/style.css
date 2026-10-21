@@ -37,7 +37,9 @@ body { font-family: var(--sans); background:var(--paper); color:var(--ink); marg
 button, input, select, textarea { font-family: inherit; color: inherit }
 ::selection { background: var(--ink); color: var(--paper) }
 
-.container { max-width:1000px; margin:28px auto; background:var(--paper); padding:18px }
+#bg { position:fixed; inset:0; z-index:0; pointer-events:none }
+
+.container { position:relative; z-index:1; max-width:1000px; margin:28px auto; background:var(--paper-veil); padding:18px }
 .header { display:flex; align-items:center; justify-content:space-between; padding-bottom:14px; border-bottom:1px solid var(--line); margin-bottom:14px }
 .header h1 { font:400 clamp(26px, 4vw, 42px)/1 var(--sans); letter-spacing:-0.03em; text-transform:lowercase; margin:0 }
 .header h1::before { content:"■ " }
@@ -97,6 +99,8 @@ body:has(.modal:not(.hidden))::before { opacity: 1; pointer-events: auto }
 .modal { position:fixed; top:6vh; left:50%; transform:translateX(-50%); z-index:1000; width:min(480px, 92vw); max-height:88vh; overflow:auto; padding:16px; background:var(--paper); border:1px solid var(--ink) }
 .modal h3 { font:400 20px var(--sans); letter-spacing:-0.02em; margin:0 0 4px }
 .modal label { display:flex; flex-direction:column; gap:4px; margin-top:10px; font:11px var(--mono); letter-spacing:0.02em; text-transform:uppercase; color:var(--ink-3) }
+.modal label:has(input[type=checkbox]) { flex-direction:row; align-items:center; gap:8px }
+.modal label input[type=checkbox] { width:14px; height:14px; accent-color:var(--ink) }
 #loansView { width:min(640px, 92vw) }
 .delete-list { max-height:240px; overflow:auto; margin:8px 0; padding:6px; border:1px solid var(--line) }
 .delete-row { padding:6px; border-bottom:1px solid var(--line); font-size:14px }
