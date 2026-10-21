@@ -579,8 +579,8 @@ menuRemove.addEventListener('click', (e) => {
   // build list preview
   const rows = ids.map((id) => {
     const it = items.find(x => x.id === id);
-    if (!it) return `<div style="padding:6px;border-bottom:1px solid #f2f4f6">Missing item ${id}</div>`;
-    return `<div style="padding:6px;border-bottom:1px solid #f2f4f6"><strong>${it.name || it.id}</strong> — ${it.amount || 0} • ${it.project || 'general'}</div>`;
+    if (!it) return `<div class="delete-row">Missing item ${id}</div>`;
+    return `<div class="delete-row"><strong>${it.name || it.id}</strong> — ${it.amount || 0} • ${it.project || 'general'}</div>`;
   }).join('');
   if (deleteList) deleteList.innerHTML = rows;
   deleteDraft = ids.slice();

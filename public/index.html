@@ -4,6 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Inventory Spreadsheet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
@@ -132,9 +135,9 @@
 
     <div id="deleteForm" class="modal hidden">
       <h3>Confirm deletion</h3>
-      <div id="deleteList" style="max-height:240px; overflow:auto; margin:8px 0; padding:6px; border:1px solid #eee; border-radius:6px; background:#fff"></div>
+      <div id="deleteList" class="delete-list"></div>
       <div class="actions">
-        <button id="deleteConfirm" style="background:#c53030;color:#fff;border-color:#c53030">Delete permanently</button>
+        <button id="deleteConfirm" class="btn-danger">Delete permanently</button>
         <button id="deleteCancel">Cancel</button>
       </div>
     </div>
