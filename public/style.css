@@ -46,8 +46,11 @@ button, input, select, textarea { font-family: inherit; color: inherit }
 .header { display:flex; align-items:center; justify-content:space-between; padding-bottom:14px; border-bottom:1px solid var(--line); margin-bottom:14px }
 .header h1 { font:400 clamp(26px, 4vw, 42px)/1 var(--sans); letter-spacing:-0.03em; text-transform:lowercase; margin:0; display:flex; align-items:center; gap:0.2em }
 .theme-toggle {
-  font-size:0.78em; line-height:1; padding:0; border:0; background:none; color:var(--ink);
-  cursor:pointer; transition:transform 120ms ease, color 120ms ease;
+  -webkit-appearance:none; appearance:none;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:0.9em; height:0.9em; min-width:0; min-height:0; box-sizing:content-box;
+  font-size:0.78em; line-height:1; padding:0; margin:0; border:0; border-radius:0; background:none; color:var(--ink);
+  cursor:pointer; transition:transform 120ms ease, color 120ms ease; flex:none;
 }
 .theme-toggle:hover { color:var(--accent); transform:scale(1.15) }
 .top-menu { position:relative }
