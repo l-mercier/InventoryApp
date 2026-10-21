@@ -79,9 +79,12 @@ button, input, select, textarea { font-family: inherit; color: inherit }
 table { width:100%; min-width:640px; border-collapse:collapse }
 th, td { padding:8px 10px; border-bottom:1px solid var(--line); text-align:left }
 th { font:11px var(--mono); letter-spacing:0.04em; text-transform:uppercase; color:var(--ink-3); font-weight:400 }
+th.sort-active { color:var(--accent) }
 tbody tr:hover { background:var(--paper-veil) }
 .sortable { cursor: pointer; user-select: none }
 .sort-indicator { margin-left:6px; font-size:12px }
+.project-cell { color:var(--accent) }
+input[type=checkbox] { accent-color:var(--accent) }
 
 .controls { display:flex; gap:8px; flex-wrap:wrap }
 button {

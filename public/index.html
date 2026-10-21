@@ -9,10 +9,12 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/style.css">
   <script>
-    // Applied before first paint so a saved preference doesn't flash the wrong theme.
+    // Applied before first paint so a saved preference doesn't flash the wrong theme/accent.
     try {
       var t = localStorage.getItem('uiTheme');
       if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+      var a = localStorage.getItem('uiAccent');
+      if (a) document.documentElement.style.setProperty('--accent', a);
     } catch (e) {}
   </script>
 </head>
@@ -148,6 +150,12 @@
           <option value="light">Light</option>
           <option value="dark">Dark</option>
         </select>
+      </label>
+      <label>Accent color
+        <div class="inline">
+          <input id="settingsAccent" type="color" value="#ff2e88">
+          <button id="settingsAccentReset" type="button" class="ghost">Reset</button>
+        </div>
       </label>
       <label><input id="settingsBackdrop" type="checkbox"> Animated background</label>
 

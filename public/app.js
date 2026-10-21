@@ -58,6 +58,8 @@ const menuSettings = document.getElementById('menuSettings');
 const settingsView = document.getElementById('settingsView');
 const settingsViewClose = document.getElementById('settingsViewClose');
 const settingsTheme = document.getElementById('settingsTheme');
+const settingsAccent = document.getElementById('settingsAccent');
+const settingsAccentReset = document.getElementById('settingsAccentReset');
 const settingsBackdrop = document.getElementById('settingsBackdrop');
 const settingsBackdropOptions = document.getElementById('settingsBackdropOptions');
 const settingsModeDither = document.getElementById('settingsModeDither');
@@ -146,6 +148,7 @@ function updateHeaderIndicators() {
   headers.forEach(h => {
     const key = h.dataset.key;
     const ind = h.querySelector('.sort-indicator');
+    h.classList.toggle('sort-active', key === sortKey);
     if (!ind) return;
     if (key === sortKey) ind.textContent = sortDir === 1 ? '▲' : '▼';
     else ind.textContent = '';
@@ -484,7 +487,7 @@ function render() {
     for (const key of columnOrder) {
       const td = document.createElement('td');
       if (key === 'name') td.textContent = it.name || '';
-      else if (key === 'project') td.textContent = it.project || '';
+      else if (key === 'project') { td.textContent = it.project || ''; td.classList.add('project-cell'); }
       else if (key === 'storagePlace') {
         if (it.project === OUTSIDE_PROJECT) {
           // physical shelf location is meaningless once an item is out on personal
@@ -714,6 +717,18 @@ function currentEffectiveTheme() {
   if (saved === 'light' || saved === 'dark') return saved;
   return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
+
+const DEFAULT_ACCENT = '#ff2e88';
+function setAccent(color) {
+  document.documentElement.style.setProperty('--accent', color);
+  if (settingsAccent) settingsAccent.value = color;
+  try { localStorage.setItem('uiAccent', color); } catch (e) { /* ignore */ }
+}
+function resetAccent() {
+  document.documentElement.style.removeProperty('--accent');
+  if (settingsAccent) settingsAccent.value = DEFAULT_ACCENT;
+  try { localStorage.removeItem('uiAccent'); } catch (e) { /* ignore */ }
+}
 function applyBackdrop(enabled) {
   if (!window.InventoryBackdrop) return;
   if (enabled) window.InventoryBackdrop.enable();
@@ -796,11 +811,15 @@ async function initBackdropMedia() {
 (function initUiSettings() {
   let theme = 'auto';
   let backdrop = false;
+  let accent = DEFAULT_ACCENT;
   try {
     theme = localStorage.getItem('uiTheme') || 'auto';
     backdrop = localStorage.getItem('uiBackdrop') === '1';
+    accent = localStorage.getItem('uiAccent') || DEFAULT_ACCENT;
   } catch (e) { /* ignore */ }
   if (settingsTheme) settingsTheme.value = theme;
+  if (settingsAccent) settingsAccent.value = accent;
+  document.documentElement.style.setProperty('--accent', accent);
   if (settingsBackdrop) settingsBackdrop.checked = backdrop;
   if (settingsBackdropOptions) settingsBackdropOptions.classList.toggle('hidden', !backdrop);
   applyTheme(theme);
@@ -821,6 +840,12 @@ if (settingsViewClose) {
 }
 if (settingsTheme) {
   settingsTheme.addEventListener('change', () => setTheme(settingsTheme.value));
+}
+if (settingsAccent) {
+  settingsAccent.addEventListener('input', () => setAccent(settingsAccent.value));
+}
+if (settingsAccentReset) {
+  settingsAccentReset.addEventListener('click', resetAccent);
 }
 if (themeToggle) {
   themeToggle.addEventListener('click', () => {
