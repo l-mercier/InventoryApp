@@ -329,19 +329,28 @@ app.put('/api/items/:id', (req, res) => {
   if (!current) return res.status(404).json({ error: 'Not found' });
 
   // The Edit form can change name/type/project directly (PUT), bypassing /move's
-  // merge-on-collision logic — editing a field so this record now matches another
-  // existing one (most commonly: changing Project instead of using "Move item") would
-  // otherwise silently leave two rows for the same item. Mirror /move's dedup here:
-  // merge into the existing match and drop this record instead.
+  // merge-on-collision logic — editing identity fields so this record now matches
+  // another existing one (most commonly: changing Project instead of using "Move item")
+  // would otherwise silently leave two rows for the same item. Mirror /move's dedup here:
+  // merge into the existing match and drop this record instead. Only triggers when this
+  // edit actually *changes* name/type/project — not on every save — so a plain amount
+  // edit on an item that happens to have an unrelated pre-existing duplicate elsewhere
+  // doesn't unexpectedly merge the two (that merge direction is ambiguous and not what
+  // the user asked for).
   const body = req.body || {};
   const next = { ...current, ...body };
-  const destMatch = db.all().find((i) =>
-    i.id !== id && i.project === next.project && i.name === next.name && i.type === next.type
-  );
-  if (destMatch) {
-    const merged = db.update(destMatch.id, { amount: (Number(destMatch.amount) || 0) + (Number(current.amount) || 0) });
-    db.delete(id);
-    return res.json(merged);
+  const identityChanged = next.project !== current.project || next.name !== current.name || next.type !== current.type;
+
+  if (identityChanged) {
+    const destMatch = db.all().find((i) =>
+      i.id !== id && i.project === next.project && i.name === next.name && i.type === next.type
+    );
+    if (destMatch) {
+      const nextAmount = Number.isFinite(Number(next.amount)) ? Number(next.amount) : (Number(current.amount) || 0);
+      const merged = db.update(destMatch.id, { amount: (Number(destMatch.amount) || 0) + nextAmount });
+      db.delete(id);
+      return res.json(merged);
+    }
   }
 
   const updated = db.update(id, body);
