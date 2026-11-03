@@ -1186,6 +1186,10 @@ document.getElementById('addSubmit').addEventListener('click', async () => {
     const before = cloneItem(items.find((item) => item.id === editId));
     const after = await api(`/api/items/${editId}`, { method:'PUT', headers:{'content-type':'application/json'}, body: JSON.stringify({ name, storagePlace: storage, amount, needed, comments, type, project }) });
     pushHistory({ kind: 'update', before, after: cloneItem(after) });
+    // the edit may have collided with an existing item and merged into it server-side —
+    // follow the returned id so a photo upload below (or anything else keyed off savedId)
+    // targets the record that actually exists now, not the one that got merged away
+    savedId = after.id;
     editId = null;
     if (addFormTitle) addFormTitle.textContent = 'Add Item';
   } else {

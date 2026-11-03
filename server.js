@@ -325,7 +325,26 @@ app.put('/api/items/:id', (req, res) => {
   if (isReservedProjectName((req.body || {}).project)) {
     return res.status(400).json({ error: 'Use "Move item" to send stock Outside' });
   }
-  const updated = db.update(id, req.body);
+  const current = db.get(id);
+  if (!current) return res.status(404).json({ error: 'Not found' });
+
+  // The Edit form can change name/type/project directly (PUT), bypassing /move's
+  // merge-on-collision logic — editing a field so this record now matches another
+  // existing one (most commonly: changing Project instead of using "Move item") would
+  // otherwise silently leave two rows for the same item. Mirror /move's dedup here:
+  // merge into the existing match and drop this record instead.
+  const body = req.body || {};
+  const next = { ...current, ...body };
+  const destMatch = db.all().find((i) =>
+    i.id !== id && i.project === next.project && i.name === next.name && i.type === next.type
+  );
+  if (destMatch) {
+    const merged = db.update(destMatch.id, { amount: (Number(destMatch.amount) || 0) + (Number(current.amount) || 0) });
+    db.delete(id);
+    return res.json(merged);
+  }
+
+  const updated = db.update(id, body);
   if (!updated) return res.status(404).json({ error: 'Not found' });
   res.json(updated);
 });
