@@ -9,7 +9,6 @@ const refreshBtn = document.getElementById('refresh');
 const undoBtn = document.getElementById('undoAction');
 const redoBtn = document.getElementById('redoAction');
 const importCsvBtn = document.getElementById('importCsv');
-const showVizBtn = document.getElementById('showViz');
 const menuVizBtn = document.getElementById('menuViz');
 const vizClearConnectionsBtn = document.getElementById('vizClearConnections');
 const moveBtn = document.getElementById('moveSelected');
@@ -579,8 +578,8 @@ undoBtn.addEventListener('click', undoLastAction);
 redoBtn.addEventListener('click', redoLastAction);
 filterProject.addEventListener('change', render);
 if (searchInput) searchInput.addEventListener('input', render);
-if (exportCsvBtn) exportCsvBtn.addEventListener('click', exportProjectCsv);
-if (exportAllCsvBtn) exportAllCsvBtn.addEventListener('click', exportAllCsv);
+if (exportCsvBtn) exportCsvBtn.addEventListener('click', () => { topMenu.classList.add('hidden'); exportProjectCsv(); });
+if (exportAllCsvBtn) exportAllCsvBtn.addEventListener('click', () => { topMenu.classList.add('hidden'); exportAllCsv(); });
 if (filterMissingBtn) {
   filterMissingBtn.addEventListener('click', () => {
     showMissingOnly = !showMissingOnly;
@@ -1257,6 +1256,7 @@ tbody.addEventListener('click', (e) => {
 
 if (importCsvBtn) {
   importCsvBtn.addEventListener('click', () => {
+    topMenu.classList.add('hidden');
     if (importCsvFile) importCsvFile.value = '';
     if (importForm) importForm.classList.remove('hidden');
   });
@@ -1314,7 +1314,6 @@ window.addEventListener('load', () => {
       });
       Visualizer = viz;
       // wire buttons
-      if (showVizBtn) showVizBtn.addEventListener('click', () => Visualizer.openVisualizer());
       if (menuVizBtn) menuVizBtn.addEventListener('click', () => { topMenu.classList.add('hidden'); Visualizer.openVisualizer(); });
       if (vizClearConnectionsBtn) vizClearConnectionsBtn.addEventListener('click', () => Visualizer.clearVisualizerConnections());
       // populate projects

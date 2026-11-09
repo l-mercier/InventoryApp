@@ -32,7 +32,6 @@
     <div class="header">
       <h1><button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle light/dark theme"></button> Inventory</h1>
       <div class="top-menu">
-        <button id="showViz">Schematic</button>
         <sc-fullscreen title="Fullscreen"></sc-fullscreen>
         <button id="menuToggle">☰</button>
         <div id="topMenu" class="menu hidden">
@@ -51,6 +50,12 @@
             <button id="menuAddProject" class="menu-link">Add project</button>
             <button id="menuTypes" class="menu-link">Manage types</button>
             <button id="menuRemove" class="menu-link">Remove from inventory</button>
+          </div>
+          <div class="menu-section">
+            <h4>Data</h4>
+            <button id="importCsv" class="menu-link">Import CSV</button>
+            <button id="exportCsv" class="menu-link">Export requirements CSV</button>
+            <button id="exportAllCsv" class="menu-link">Export full inventory CSV</button>
           </div>
           <div class="menu-section">
             <h4>Preferences</h4>
@@ -74,9 +79,6 @@
       <button id="refresh" class="ghost">Refresh</button>
       <button id="undoAction" class="ghost">Undo</button>
       <button id="redoAction" class="ghost">Redo</button>
-      <button id="importCsv" class="ghost">Import CSV</button>
-      <button id="exportCsv" class="ghost">Export requirements CSV</button>
-      <button id="exportAllCsv" class="ghost">Export full inventory CSV</button>
     </div>
 
     <div class="table-scroll">
