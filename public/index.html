@@ -17,6 +17,13 @@
       if (a) document.documentElement.style.setProperty('--accent', a);
     } catch (e) {}
   </script>
+  <script type="importmap">
+    { "imports": { "@ircam/sc-components/": "https://esm.sh/@ircam/sc-components@3.11.1/" } }
+  </script>
+  <script type="module">
+    import '@ircam/sc-components/sc-icon.js';
+    import '@ircam/sc-components/sc-fullscreen.js';
+  </script>
 </head>
 <body>
   <canvas id="bg" aria-hidden="true"></canvas>
@@ -26,6 +33,7 @@
       <h1><button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle light/dark theme"></button> Inventory</h1>
       <div class="top-menu">
         <button id="showViz">Schematic</button>
+        <sc-fullscreen title="Fullscreen"></sc-fullscreen>
         <button id="menuToggle">☰</button>
         <div id="topMenu" class="menu hidden">
           <div class="menu-section">

@@ -58,7 +58,19 @@ button, input, select, textarea { font-family: inherit; color: inherit }
   cursor:pointer; transition:background 120ms ease, transform 120ms ease; flex:none;
 }
 .theme-toggle:hover { background:var(--accent); transform:scale(1.15) }
-.top-menu { position:relative }
+.top-menu { position:relative; display:flex; align-items:center; gap:8px }
+/* sc-fullscreen (@ircam/sc-components) reads these custom properties from its shadow
+   DOM, inherited from the page like any other CSS custom property — mapped onto this
+   app's own paper/ink/accent tokens instead of the component's default theme. Its icon
+   glyph is hardcoded white by the library (not overridable from outside the shadow
+   tree), so this gives the button a solid dark fill rather than fighting for a colored
+   icon on a white background. */
+.top-menu sc-fullscreen {
+  --sc-color-primary-2: var(--ink);
+  --sc-color-primary-3: var(--ink-2);
+  --sc-color-primary-4: var(--accent);
+  vertical-align: middle;
+}
 .menu { position:absolute; right:0; top:40px; width:min(280px, 90vw); max-height:80vh; overflow:auto; background:var(--paper); border:1px solid var(--ink); padding:12px; display:flex; flex-direction:column; gap:16px; z-index:1001 }
 .menu-section { display:flex; flex-direction:column; gap:2px }
 .menu-section h4 { font:11px var(--mono); letter-spacing:0.04em; text-transform:uppercase; color:var(--ink-3); font-weight:400; margin:0 0 4px }
