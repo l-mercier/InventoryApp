@@ -59,16 +59,27 @@ button, input, select, textarea { font-family: inherit; color: inherit }
 }
 .theme-toggle:hover { background:var(--accent); transform:scale(1.15) }
 .top-menu { position:relative; display:flex; align-items:center; gap:8px }
-/* sc-fullscreen (@ircam/sc-components) reads these custom properties from its shadow
-   DOM, inherited from the page like any other CSS custom property — mapped onto this
-   app's own paper/ink/accent tokens instead of the component's default theme. Its icon
-   glyph is hardcoded white by the library (not overridable from outside the shadow
-   tree), so this gives the button a solid dark fill rather than fighting for a colored
-   icon on a white background. */
+/* sc-fullscreen (@ircam/sc-components) renders a nested <sc-icon>, itself a separate
+   shadow tree one level down. --sc-icon-color *looks* like an overridable custom
+   property (it's read via var() in sc-icon's own stylesheet), but sc-icon's own
+   `:host { --sc-icon-color: white }` sets it directly on that inner element — and a
+   value set directly on an element always wins over one merely inherited from an
+   ancestor, no matter the specificity of the external rule trying to set it. So the
+   icon is white, full stop; confirmed by testing with an inline style override, which
+   still had no effect. Rather than a full button-sized dark fill (which reads as an
+   inverted/mismatched button next to its light siblings), this keeps the dark fill the
+   icon needs but shrinks it to a small borderless icon chip, closer in spirit to the
+   theme-toggle dot than to a button. */
 .top-menu sc-fullscreen {
-  --sc-color-primary-2: var(--ink);
-  --sc-color-primary-3: var(--ink-2);
+  /* Fixed dark values, not theme tokens: the icon stroke is permanently white, so the
+     chip must stay dark in both themes — if this followed --ink (which flips to
+     near-white in dark mode) the white-on-white icon would disappear. */
+  --sc-color-primary-2: #171717;
+  --sc-color-primary-3: #333333;
   --sc-color-primary-4: var(--accent);
+  width: 20px;
+  height: 20px;
+  border: none;
   vertical-align: middle;
 }
 .menu { position:absolute; right:0; top:40px; width:min(280px, 90vw); max-height:80vh; overflow:auto; background:var(--paper); border:1px solid var(--ink); padding:12px; display:flex; flex-direction:column; gap:16px; z-index:1001 }
